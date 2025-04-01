@@ -47,17 +47,13 @@ export async function POST(req: Request) {
         ],
         temperature: 0.7
       },
-    //   {
-    //     model: "gpt-4",
-    //     messages: [{ role: "system", content: prompt }],
-    //     temperature: 0.7,
-    //   },
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${apiKey}`,
-    //     },
-    //   }
+    
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      }
     );
 
     let data = (await response).choices[0].message.content;
