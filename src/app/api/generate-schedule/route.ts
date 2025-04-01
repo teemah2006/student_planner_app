@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 import OpenAI from "openai";
 
 const currentDate = new Date().toISOString().split("T")[0];
@@ -10,8 +9,7 @@ export async function POST(req: Request) {
   try {
     const { subjects, hoursPerDay, examDate, preferredTime } = await req.json();
 
-    // OpenAI API Key (Store in .env file)
-    // const apiKey = process.env.OPENAI_API_KEY;
+    
     const prompt = `
       Today's date: ${currentDate}
       Create a study schedule for the following details:
@@ -75,6 +73,7 @@ export async function POST(req: Request) {
       return NextResponse.json(JSON.parse(data.trim()));
     } else{return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });}
   } catch (error) {
+    alert(`Failed to generate schedule: ${error}`)
     return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });
   }
 }

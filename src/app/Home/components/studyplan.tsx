@@ -48,7 +48,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
                 <div className="sticky bottom-0 bg-white w-full z-2 p-2 flex justify-end gap-4 box-border">
                     <button className="bg-white border border-gray-600 cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent
                     hover:text-white box-border px-4" 
-                    onClick={(e) => document.getElementById("modal")?.classList.add("hidden")}>Cancel</button>
+                    onClick={() => document.getElementById("modal")?.classList.add("hidden")}>Cancel</button>
                     <button className="bg-green-700 cursor-pointer px-4 p-2 rounded text-white  hover:bg-green-800 ">Save</button>
                 </div>
             </div>
