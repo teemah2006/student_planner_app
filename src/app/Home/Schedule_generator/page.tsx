@@ -15,8 +15,9 @@ interface StudyPlan {
 }
 
 export default function StudyPlanner() {
-  const [subjects, setSubjects] = useState<string[]>([]);
+  const [subjects, setSubjects] = useState([{ subject: "", topics: [""] }]);
   const [newSubject, setNewSubject] = useState("");
+  const [newTopics, setNewTopics] = useState([""]);
   const [hours, setHours] = useState(2);
   const [examDate, setExamDate] = useState("");
   const [schedule, setSchedule] = useState<StudyPlan | null>(null);;
@@ -24,21 +25,37 @@ export default function StudyPlanner() {
   const [preferredTime, setPreferredTime] = useState("")
 
   const addSubject = () => {
-    if (newSubject.trim() !== "") {
-      setSubjects([...subjects, newSubject.trim()]);
+    if(newSubject){
+      setSubjects([
+        ...subjects,
+        {
+          subject: newSubject,
+          topics: newTopics.filter((topic) => topic.trim() !== ""),
+        },
+      ]);
+      // Reset the input fields
       setNewSubject("");
+      setNewTopics([""]);
     }
+    
   };
 
+  const addTopic = () => {
+    const Topics = [...newTopics];
+    Topics.push("");
+    setNewTopics(Topics);
+  };
+  
   const generateSchedule = async () => {
     setLoading(true);
     setSchedule(null);
 
+    if(subjects.length >= 1){
     try {
       const response = await fetch("/api/generate-schedule", {
         method: "POST",
         body: JSON.stringify( {
-        subjects,
+        subjects: subjects,
         hoursPerDay: hours,
         examDate,
         preferredTime,
@@ -53,7 +70,8 @@ export default function StudyPlanner() {
     return;
   }
 
-  setSchedule(data); // Ensure valid data before setting state
+  setSchedule(data); 
+  // Ensure valid data before setting state
     } catch (error) {
       console.error("Error generating schedule:", error);
       alert("Failed to generate schedule. Please try again")
@@ -61,21 +79,44 @@ export default function StudyPlanner() {
     } finally {
       setLoading(false);
     }
-  };
+  } else{alert("Failed to generate schedule. Please enter subjects");setLoading(false)}
+} ;
 
   return (
-    <div className="w-full static  overflow-hidden mx-auto items-center p-6 md:p-12 bg-white  shadow-md text-black">
+    <div className="w-full  h-screen overflow-auto mx-auto items-center p-6 md:p-12 bg-white  shadow-md text-black">
       <h2 className="text-xl md:text-2xl font-bold text-center ">AI Study Planner</h2>
 
       {/* Subject Input */}
       <div className="mt-4 ">
-        <input
-          type="text"
-          value={newSubject}
-          onChange={(e) => setNewSubject(e.target.value)}
-          className="border p-2 w-full md:w-[70%] mx-auto rounded"
-          placeholder="Enter a subject..."
-        />
+        <div  className="border rounded-xl p-4 space-y-2 bg-white shadow md:w-[70%]">
+          <input
+            type="text"
+            placeholder="Enter subject"
+            className="w-full border px-3 py-2 rounded-md"
+            value={newSubject}
+            onChange={(e) => setNewSubject(e.target.value)}
+          />
+        {newTopics.map((topic, j) => (
+            <input
+              key={j}
+              type="text"
+              placeholder={`Topic ${j + 1}`}
+              className="w-full border px-3 py-2 rounded-md mt-1"
+              value={topic}
+              onChange={(e) => {const updatedTopics = [...newTopics];
+                updatedTopics[j] = e.target.value;
+                setNewTopics(updatedTopics);}}
+            />
+          ))}
+          <button
+            type="button"
+            onClick={() => addTopic()}
+            className="text-blue-500 text-sm underline mt-2 cursor-pointer"
+          >
+            + Add topic
+          </button>
+        </div>
+
         <button
           onClick={addSubject}
           className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full md:w-[70%] cursor-pointer hover:bg-blue-700"
@@ -85,13 +126,25 @@ export default function StudyPlanner() {
       </div>
 
       {/* Subjects List */}
-      <div className="mt-4">
+      <div className="mt-4  ">
         <h3 className="font-semibold">Selected Subjects:</h3>
-        <ul className="list-disc pl-5">
+        <div className="grid  md:grid-cols-3 gap-4 grid-cols-2">
+        
+        
           {subjects.map((subject, index) => (
-            <li key={index} className="text-gray-700">{subject}</li>
+            <div key={index}>
+            <dl  className="list-disc  block">
+            <dt  className="text-gray-700 font-semibold capitalize">{subject.subject}</dt>
+            <dd  className="text-gray-700">
+            {subject.topics.map((topic, index) => (
+              <li key={index}>{topic}</li>
+            ))}
+            </dd>
+            </dl>
+            </div>
           ))}
-        </ul>
+      
+        </div>
       </div>
 
       {/* Study Hours & Exam Date */}
@@ -102,13 +155,14 @@ export default function StudyPlanner() {
           value={hours}
           onChange={(e) => setHours(Number(e.target.value))}
           className="border p-2 w-full rounded md:w-[70%]"
+          required
         />
       </div>
 
       <div className="mt-4">
         <label className="block font-semibold">Preferred time of the day</label>
           <select name="preferredTime" id="preferredTime" className="border p-2 w-full rounded md:w-[70%]"
-          onChange={(e) => setPreferredTime(e.target.value)} value={preferredTime}>
+          onChange={(e) => setPreferredTime(e.target.value)} value={preferredTime} required>
             <option value="">--select preferred time of the day--</option>
             <option value="morning">Morning</option>
             <option value="afternoon">Afternoon</option>

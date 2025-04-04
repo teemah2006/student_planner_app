@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const prompt = `
       Today's date: ${currentDate}
       Create a study schedule for the following details:
-      - Subjects: ${subjects.join(", ")}
+      - Subjects and their topics: ${subjects}
       - Hours per day: ${hoursPerDay}
       - Exam Date: ${examDate || "No exam date specified"}
       - Preferred time of the day: ${preferredTime}
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       return NextResponse.json(JSON.parse(data.trim()));
     } else{return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });}
   } catch (error) {
-    alert(`Failed to generate schedule: ${error}`)
+    // alert(`Failed to generate schedule: ${error}`)
     return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });
   }
 }

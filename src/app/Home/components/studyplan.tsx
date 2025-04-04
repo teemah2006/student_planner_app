@@ -13,13 +13,13 @@ interface StudyPlan {
 
 export default function StudyPlan({ plan }: { plan: StudyPlan }) {
     return (
-        <div className="fixed left-0 top-0  bg-transparent bg-opacity-50 w-screen h-screen flex justify-center
+        <div className="fixed left-0 top-0  bg-black w-screen h-screen flex justify-center
         items-center" id="modal">
-            <div className=" bg-white rounded-lg  w-auto   overflow-auto h-[90%]">
+            <div className=" bg-white rounded-lg  w-auto text-black   overflow-auto h-[90%]">
                 <div className="p-6">
 
                 
-                <h2 className="text-xl font-semibold mb-4">📖 Study Plan</h2>
+                <h2 className="text-xl font-semibold mb-4"> Study Plan</h2>
                 {plan.dailyPlan.map((day, index) => (
                     <div key={index}>
                         <table className="table-auto">
