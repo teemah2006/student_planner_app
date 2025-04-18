@@ -3,7 +3,7 @@ import OpenAI from "openai";
 
 const currentDate = new Date().toISOString().split("T")[0];
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY!})
+    apiKey: process.env.OPENAI_API_KEY})
   
 export async function POST(req: Request) {
   
@@ -71,7 +71,7 @@ Instructions:
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY!}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
       }
     );
