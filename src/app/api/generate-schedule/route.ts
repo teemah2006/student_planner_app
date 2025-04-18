@@ -6,37 +6,57 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY})
   
 export async function POST(req: Request) {
+  
   try {
     const { subjects, hoursPerDay, examDate, preferredTime } = await req.json();
+    // console.log("Received in API:",  subjects );
 
     
     const prompt = `
       Today's date: ${currentDate}
-      Create a study schedule for the following details:
-      - Subjects and their topics: ${subjects}
-      - Hours per day: ${hoursPerDay}
-      - Exam Date: ${examDate || "No exam date specified"}
-      - Preferred time of the day: ${preferredTime}
+      
+You are a helpful AI study assistant.
 
-      Provide a structured study plan for the user,
-      add breaks too.
-      Format the response as JSON:
-      {
-        "dailyPlan": [
-          {
-            "day": "Day 1",
-            "date": "14, April 2025",
-           "activities": [{"time": [time,subject,activity 1]},],
-            
-          },
-          {
-            "day": "Day 2",
-            "date": "day 2 date",
-            "activities": [{"time": [time,subject,activity 1]},],
-            
-          }
-        ]
-      }
+The user wants to generate a personalized 7-day study plan. Here are their details:
+
+Study hours per day: ${hoursPerDay}
+Preferred time of day: ${preferredTime}
+${examDate ? `Exam date: ${examDate}` : ""}
+
+Subjects and Topics:
+${subjects.map(
+  (subject: { subject: string; topics: string[]; }, i: number) =>
+    `${i + 1}. ${subject.subject}\n   Topics: ${subject.topics.join(", ")}`
+).join("\n")}
+
+Instructions:
+- Create a 7-day study schedule.
+- Use all subjects and topics provided.
+- Spread the study hours across the preferred time of day.
+- Mention subject, topics, and time duration for each session.
+- include break sessions
+- Try to prioritize subjects/topics that may have upcoming exams (if exam date is provided).
+- Return the response in *valid JSON* like this:
+
+{
+  "dailyPlan": [
+    {
+      "day": "Day 1",
+      "sessions": [
+        {
+          "subject": "Math",
+          "topic": "Algebra",
+          "activity": "solve questions"
+          "timeInterval": 10:00am - 11:00am,
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+
+
     `;
 
     const response = openai.chat.completions.create({
@@ -70,6 +90,6 @@ export async function POST(req: Request) {
     } else{return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });}
   } catch (error) {
     // alert(`Failed to generate schedule: ${error}`)
-    return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });
+    return NextResponse.json({ error: `Failed to generate schedule ${error}` }, { status: 500 });
   }
 }

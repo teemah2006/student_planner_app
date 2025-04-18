@@ -8,13 +8,15 @@ import { FaSwatchbook } from "react-icons/fa6";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { FaBookAtlas } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
 export default function Navbar() {
+    const pathName = usePathname();
     const [isOpen, setIsOpen] = useState(false);
-    const LinkClasses = " block border-transparent border hover:border-blue-100 hover:rounded flex gap-2 items-center  p-2 transition active:bg-blue-100 active:text-blue-700"
+    const LinkClasses = " block border-transparent border hover:border-blue-100 rounded flex gap-2 items-center  p-2 transition "
     const Links = (
         <>
-            <Link href="/Home" className={LinkClasses}><FaSwatchbook />Dashboard</Link>
-            <Link href="/Home/Schedule_generator" className={LinkClasses}><FaArrowsRotate />Schedule generator</Link>
+            <Link href="/Home" className={pathName=="/Home"? LinkClasses + ' bg-blue-100 text-blue-700':LinkClasses }><FaSwatchbook />Dashboard</Link>
+            <Link href="/Home/Schedule_generator" className={pathName=="/Home/Schedule_generator"? LinkClasses + ' bg-blue-100 text-blue-700':LinkClasses }><FaArrowsRotate />Schedule generator</Link>
             <Link href="/Home" className={LinkClasses}><FaBookAtlas />Recommendations</Link>
             <Link href="/Home" onClick={() => signOut()} className={LinkClasses}><FaArrowRightFromBracket />Log Out</Link>
         </>
@@ -31,6 +33,7 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:block lg:text-lg font-bold  flex flex-col md:space-y-6 space-y-2">
+
                 {Links}
             </div>
 

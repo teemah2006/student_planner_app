@@ -5,14 +5,18 @@ import StudyPlan from "../components/studyplan";
 
 interface StudyPlan {
   dailyPlan: {
-    day: string;
-    date: string;
-    activities: {
-      time: string[];
-
-    }[];
-  }[];
+    day: string,
+  sessions: 
+    {
+      subject: string,
+      topic: string,
+      activity: string,
+      timeInterval: string;
+    }[]
+}[];
 }
+
+
 
 export default function StudyPlanner() {
   const [subjects, setSubjects] = useState([{ subject: "", topics: [""] }]);
@@ -50,12 +54,16 @@ export default function StudyPlanner() {
     setLoading(true);
     setSchedule(null);
 
-    if(subjects.length >= 1){
-    try {
+    if(subjects.length > 1){
+      console.log(subjects.slice(1))
+      try {
       const response = await fetch("/api/generate-schedule", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify( {
-        subjects: subjects,
+        subjects: subjects.slice(1),
         hoursPerDay: hours,
         examDate,
         preferredTime,
@@ -70,7 +78,10 @@ export default function StudyPlanner() {
     return;
   }
 
-  setSchedule(data); 
+
+    setSchedule(data); 
+  console.log(data)
+
   // Ensure valid data before setting state
     } catch (error) {
       console.error("Error generating schedule:", error);
@@ -83,12 +94,13 @@ export default function StudyPlanner() {
 } ;
 
   return (
-    <div className="w-full  h-screen overflow-auto mx-auto items-center p-6 md:p-12 bg-white  shadow-md text-black">
+    <div className="w-full grid md:grid-cols-2 grid-rows-2 gap-x-4  justify-between   h-screen overflow-auto   p-6 md:p-10 bg-white  shadow-md text-black">
+      <div className="flex-grow-0">
       <h2 className="text-xl md:text-2xl font-bold text-center ">AI Study Planner</h2>
 
       {/* Subject Input */}
       <div className="mt-4 ">
-        <div  className="border rounded-xl p-4 space-y-2 bg-white shadow md:w-[70%]">
+        <div  className="border rounded-xl p-4 space-y-2 bg-white shadow ">
           <input
             type="text"
             placeholder="Enter subject"
@@ -119,7 +131,7 @@ export default function StudyPlanner() {
 
         <button
           onClick={addSubject}
-          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full md:w-[70%] cursor-pointer hover:bg-blue-700"
+          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
         >
           Add Subject
         </button>
@@ -129,9 +141,8 @@ export default function StudyPlanner() {
       <div className="mt-4  ">
         <h3 className="font-semibold">Selected Subjects:</h3>
         <div className="grid  md:grid-cols-3 gap-4 grid-cols-2">
-        
-        
-          {subjects.map((subject, index) => (
+          
+          {subjects.length > 1? subjects.slice(1).map((subject, index) => (
             <div key={index}>
             <dl  className="list-disc  block">
             <dt  className="text-gray-700 font-semibold capitalize">{subject.subject}</dt>
@@ -142,7 +153,7 @@ export default function StudyPlanner() {
             </dd>
             </dl>
             </div>
-          ))}
+          )): null}
       
         </div>
       </div>
@@ -154,14 +165,14 @@ export default function StudyPlanner() {
           type="number"
           value={hours}
           onChange={(e) => setHours(Number(e.target.value))}
-          className="border p-2 w-full rounded md:w-[70%]"
+          className="border p-2 w-full rounded"
           required
         />
       </div>
 
       <div className="mt-4">
         <label className="block font-semibold">Preferred time of the day</label>
-          <select name="preferredTime" id="preferredTime" className="border p-2 w-full rounded md:w-[70%]"
+          <select name="preferredTime" id="preferredTime" className="border p-2 w-full rounded "
           onChange={(e) => setPreferredTime(e.target.value)} value={preferredTime} required>
             <option value="">--select preferred time of the day--</option>
             <option value="morning">Morning</option>
@@ -176,23 +187,26 @@ export default function StudyPlanner() {
           type="date"
           value={examDate}
           onChange={(e) => setExamDate(e.target.value)}
-          className="border p-2 w-full rounded md:w-[70%]"
+          className="border p-2 w-full rounded "
         />
       </div>
 
       {/* Generate Schedule Button */}
       <button
         onClick={generateSchedule}
-        className="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full md:w-[70%] cursor-pointer hover:bg-green-700"
+        className="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-green-700"
         disabled={loading}
       >
         {loading ? "Generating..." : "Generate Study Plan"}
       </button>
-
+      </div>
       {/* Display AI Response */}
-      {schedule && 
+
+      
         <StudyPlan plan={schedule}  />
-      }
+      
+
+      
     </div>
   );
 }
