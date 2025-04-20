@@ -49,6 +49,15 @@ export default function StudyPlanner() {
     Topics.push("");
     setNewTopics(Topics);
   };
+
+  const clearInputs = () => {
+    setNewSubject("");
+    setNewTopics([""]);
+    setSubjects([{ subject: "", topics: [""] }]);
+    setHours(2);
+    setExamDate("");
+    setPreferredTime("")
+  }
   
   const generateSchedule = async () => {
     setLoading(true);
@@ -190,9 +199,14 @@ export default function StudyPlanner() {
           className="border p-2 w-full rounded "
         />
       </div>
-
+          
       {/* Generate Schedule Button */}
-      <button
+      <div className="flex space-x-4">
+      <button className="mt-4 bg-yellow-500  text-gray-800 px-4 py-2 rounded w-full  cursor-pointer hover:bg-yellow-600"
+      onClick={clearInputs}>
+            Clear inputs
+          </button>
+          <button
         onClick={generateSchedule}
         className="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-green-700"
         disabled={loading}
@@ -200,10 +214,14 @@ export default function StudyPlanner() {
         {loading ? "Generating..." : "Generate Study Plan"}
       </button>
       </div>
+      
+      </div>
       {/* Display AI Response */}
 
-      
+      {schedule &&
         <StudyPlan plan={schedule}  />
+      }
+        
       
 
       
