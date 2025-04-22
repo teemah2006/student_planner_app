@@ -7,8 +7,11 @@ export default function Dashboardpg(){
         return <p>You must be signed in to view this page.</p>;
       }
     
-    return (<div className="p-12 overflow-auto h-screen">
-      <p className="text-black text-2xl">Welcome, {session.user? session.user.name : null}!</p>
-        <StudyPlanViewer/>
+    return (<div className="md:p-12 p-6  overflow-auto h-screen">
+      <p className="text-black text-2xl ">Welcome, {session.user? session.user.name : null}!</p>
+      <div className="md:grid md:grid-cols-3">
+      <StudyPlanViewer/>
+      </div>
+       
       </div>)
 }
