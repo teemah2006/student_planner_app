@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { SetStateAction, useEffect, useState } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc , deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
 
@@ -16,6 +16,10 @@ type SessionType = {
 type DayPlan = {
   day: string;
   sessions: SessionType[];
+};
+const deletePlan = async (userId: string) => {
+  const planRef = doc(db, "studyPlans", userId);
+  await deleteDoc(planRef);
 };
 
 export default function StudyPlanViewer() {
@@ -38,6 +42,23 @@ export default function StudyPlanViewer() {
     setPlan(editedPlan);
     setIsEditing(false);
   };
+
+  const handleDelete = async () => {
+    const confirmed = confirm('Are you sure you want to delete this plan? ');
+    if (!confirmed){
+      return
+    };
+
+    try{
+      await deletePlan(session?.user?.email!)
+      setPlan(null);
+      setIsEditing(false);
+      alert('Study plan deleted!')
+    } catch (error){
+      console.log('error deleting plan', error)
+      alert('something went wrong while deleting.')
+    }
+  }
   
 
   useEffect(() => {
@@ -49,7 +70,7 @@ export default function StudyPlanViewer() {
         if (docSnap.exists()) {
           const data = docSnap.data();
           console.log('Fetched data:', data);
-          setPlan(data.plan.dailyPlan);
+          setPlan(data.plan);
         } else {
             console.log('No document found for:', session.user.email);
           setPlan(null);
@@ -102,10 +123,20 @@ export default function StudyPlanViewer() {
     
     <div className="p-4 space-y-6 col-span-2">
       <div className='flex justify-between'>
-      <h2 className="text-xl font-bold text-black">Your 7-Day Study Plan</h2>
+      <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
+      <div>
       <button onClick={() => setIsEditing(!isEditing)} className='bg-green-500 cursor-pointer hover:bg-green-700 rounded p-2'>
   {isEditing ? "Cancel Edit" : "Edit Plan"}
+</button> 
+  <button
+  onClick={handleDelete}
+  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-4 cursor-pointer"
+>
+  Delete Plan
 </button>
+      </div>
+      
+
       </div>
       
 {isEditing ? 

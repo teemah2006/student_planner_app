@@ -51,7 +51,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
     try {
       await setDoc(doc(db, "studyPlans", session.user.email), {
         createdAt: new Date(),
-        plan: plan,
+        plan: plan.dailyPlan,
       });
       alert("Study plan saved successfully! 📚");
     } catch (error) {

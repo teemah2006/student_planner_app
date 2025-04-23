@@ -17,7 +17,7 @@ export default function Navbar() {
         <>
             <Link href="/Home" className={pathName=="/Home"? LinkClasses + ' bg-blue-100 text-blue-700':LinkClasses }><FaSwatchbook />Dashboard</Link>
             <Link href="/Home/Schedule_generator" className={pathName=="/Home/Schedule_generator"? LinkClasses + ' bg-blue-100 text-blue-700':LinkClasses }><FaArrowsRotate />Schedule generator</Link>
-            <Link href="/Home" className={LinkClasses}><FaBookAtlas />Recommendations</Link>
+            <Link href="/Home/Recommendations" className={pathName=="/Home/Recommendations"? LinkClasses + ' bg-blue-100 text-blue-700':LinkClasses }><FaBookAtlas />Recommendations</Link>
             <Link href="/Home" onClick={() => signOut()} className={LinkClasses}><FaArrowRightFromBracket />Log Out</Link>
         </>
     );
