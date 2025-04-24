@@ -11,7 +11,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
   });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLFormElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -20,7 +20,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch('/api/generateRecommendation', {
+    const res = await fetch('/api/generate-recommendations', {
       method: 'POST',
       body: JSON.stringify(formData),
     });
@@ -36,7 +36,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-black">
-      {['subject', 'weakness', 'style', 'topics', 'examDate'].map((field) => (
+      {['subject', 'topics'].map((field) => (
         <div key={field}>
           <label className="block capitalize">{field}</label>
           <input
@@ -48,10 +48,37 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
           />
         </div>
       ))}
+      <div>
+        <label className="block capitalize">Weakness(es)</label>
+        <textarea name="weakness" id="" value={formData.weakness} onChange={handleChange} 
+        placeholder='what area are you struggling with? e.g naming of organic compounds' className="border rounded w-full p-2" required>
+
+        </textarea>
+      </div>
+      <div>
+      <label className="block capitalize">Exam date</label>
+          <input 
+          type='date'
+            name='examDate'
+            value={formData.examDate}
+            onChange={handleChange}
+            className="border rounded w-full p-2"
+          />
+      </div>
+      <div>
+        <label className="block capitalize">Learning style</label>
+        <select name="style" id="" onChange={handleChange} value={formData.style} className="border rounded w-full p-2"
+          required>
+          <option value="">Select learning style</option>
+          <option value="visual">Visual</option>
+          <option value="auditory">Auditory</option>
+          <option value="kinesthetic">Kinesthetic</option>
+        </select>
+      </div>
       <button
         type="submit"
         disabled={loading}
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
       >
         {loading ? 'Generating...' : 'Generate Recommendation'}
       </button>

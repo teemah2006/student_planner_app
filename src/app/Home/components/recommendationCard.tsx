@@ -16,7 +16,11 @@ type Props = {
 
 
 
-export default function RecommendationCard({recommendation} : Props ) {
+export default function RecommendationCard({recommendation , deleteReco } : {recommendation: Recommendation, deleteReco: (link:any) => void} ) {
+
+  const handleDelete = () => {
+    deleteReco(recommendation.link)
+  }
     return (
       <div className="border p-4 rounded-md shadow hover:shadow-md transition bg-white space-y-2">
         <h3 className="text-lg font-semibold text-blue-800">{recommendation.title}</h3>
@@ -29,9 +33,15 @@ export default function RecommendationCard({recommendation} : Props ) {
         >
           View Resource
         </a>
+        <div className="w-full flex justify-between">
         <div className="text-xs text-gray-500 italic">
           Type: {recommendation.type} | Best for: {recommendation.suitableFor}
         </div>
+        <button className="bg-transparent text-red-500 underline text-sm cursor-pointer" onClick={handleDelete}>
+          Delete recommendation
+        </button>
+        </div>
+        
       </div>
     );
   }

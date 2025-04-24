@@ -30,7 +30,7 @@ export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any
     <div className="space-y-4">
         
       {editedPlan.map((day: any, index: number) => (
-        <div key={index} className="border rounded-lg p-4 shadow-sm">
+        <div key={index} className="border rounded-lg md:p-4 p-2 shadow-sm w-full overflow-auto">
         <h3 className="font-semibold text-lg mb-2 text-blue-800">{day.day}</h3>
         <table className="w-full border-collapse text-sm text-gray-700">
           <thead>
@@ -57,36 +57,7 @@ export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any
           </tbody>
         </table>
       </div>
-        // <div key={index} className="border p-4 rounded-md shadow text-gray-700">
-        //   <h3 className="font-bold text-blue-800">Day {index + 1}</h3>
-        //   <label className="block mt-2">
-        //     Subject:
-        //     <input
-        //       type="text"
-        //       value={day.subject}
-        //       onChange={(e) => handleChange(index, "subject", e.target.value)}
-        //       className="border p-2 rounded w-full"
-        //     />
-        //   </label>
-        //   <label className="block mt-2">
-        //     Topic:
-        //     <input
-        //       type="text"
-        //       value={day.topic}
-        //       onChange={(e) => handleChange(index, "topic", e.target.value)}
-        //       className="border p-2 rounded w-full"
-        //     />
-        //   </label>
-        //   <label className="block mt-2">
-        //     Time:
-        //     <input
-        //       type="text"
-        //       value={day.time}
-        //       onChange={(e) => handleChange(index, "time", e.target.value)}
-        //       className="border p-2 rounded w-full"
-        //     />
-        //   </label>
-        // </div>
+        
       ))}
 
       <button

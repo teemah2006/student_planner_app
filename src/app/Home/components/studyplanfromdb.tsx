@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { SetStateAction, useEffect, useState } from 'react';
-import { doc, getDoc, setDoc , deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
 
@@ -30,36 +30,36 @@ export default function StudyPlanViewer() {
 
 
   const handleSaveChanges = async (editedPlan: SetStateAction<DayPlan[] | null>) => {
-  
+
     if (!session?.user?.email) return;
-  
+
     const docRef = doc(db, "studyPlans", session.user.email);
     await setDoc(docRef, {
       createdAt: new Date(),
       plan: editedPlan,
     }); // overwrite with new data
-  
+
     setPlan(editedPlan);
     setIsEditing(false);
   };
 
   const handleDelete = async () => {
     const confirmed = confirm('Are you sure you want to delete this plan? ');
-    if (!confirmed){
+    if (!confirmed) {
       return
     };
 
-    try{
+    try {
       await deletePlan(session?.user?.email!)
       setPlan(null);
       setIsEditing(false);
       alert('Study plan deleted!')
-    } catch (error){
+    } catch (error) {
       console.log('error deleting plan', error)
       alert('something went wrong while deleting.')
     }
   }
-  
+
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -72,7 +72,7 @@ export default function StudyPlanViewer() {
           console.log('Fetched data:', data);
           setPlan(data.plan);
         } else {
-            console.log('No document found for:', session.user.email);
+          console.log('No document found for:', session.user.email);
           setPlan(null);
         }
         setLoading(false);
@@ -86,64 +86,73 @@ export default function StudyPlanViewer() {
   if (!plan) return <p className='text-gray-500'>No study plan found.</p>;
 
   const Plan = () => {
-    return(
+    return (
       <>
-      {plan.map((day, index) => (
-        <div key={index} className="border rounded-lg p-4 shadow-sm">
-          <h3 className="font-semibold text-lg mb-2 text-blue-800">{day.day}</h3>
-          <table className="w-full border-collapse text-sm text-gray-700">
-            <thead>
-              <tr className="bg-blue-100 text-left">
-                <th className="p-2 border">Subject</th>
-                <th className="p-2 border">Topic</th>
-                <th className="p-2 border">Activity</th>
-                <th className="p-2 border">Time Interval</th>
-              </tr>
-            </thead>
-            <tbody>
-              {day.sessions.map((session, i) => (
-                <tr key={i} className="border-t">
-                  <td className="p-2 border">{session.subject}</td>
-                  <td className="p-2 border">{session.topic}</td>
-                  <td className="p-2 border">{session.activity}</td>
-                  <td className="p-2 border">{session.timeInterval}</td>
+        {plan.map((day, index) => (
+          <div key={index} className="border rounded-lg md:p-4 p-2 shadow-sm overflow-auto w-full">
+            <h3 className="font-semibold text-lg mb-2 text-blue-800">{day.day}</h3>
+            <table className="w-full border-collapse text-sm text-gray-700">
+              <thead>
+                <tr className="bg-blue-100 text-left">
+                  <th className="p-2 border">Subject</th>
+                  <th className="p-2 border">Topic</th>
+                  <th className="p-2 border">Activity</th>
+                  <th className="p-2 border">Time Interval</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
+              </thead>
+              <tbody>
+                {day.sessions.map((session, i) => (
+                  <tr key={i} className="border-t">
+                    <td className="p-2 border">{session.subject}</td>
+                    <td className="p-2 border">{session.topic}</td>
+                    <td className="p-2 border">{session.activity}</td>
+                    <td className="p-2 border">{session.timeInterval}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
       </>
     )
-    
+
   }
-  
+
 
   return (
-    
-    <div className="p-4 space-y-6 col-span-2">
-      <div className='flex justify-between'>
-      <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
-      <div>
-      <button onClick={() => setIsEditing(!isEditing)} className='bg-green-500 cursor-pointer hover:bg-green-700 rounded p-2'>
-  {isEditing ? "Cancel Edit" : "Edit Plan"}
-</button> 
-  <button
-  onClick={handleDelete}
-  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-4 cursor-pointer"
->
-  Delete Plan
-</button>
-      </div>
-      
+
+    <div className="md:p-4 p-2 space-y-6 md:col-span-2">
+      <div className='flex justify-between items-center'>
+        <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
+        <div>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-green-500 md:inline hidden cursor-pointer hover:bg-green-700 rounded p-2'>
+            {isEditing ? "Cancel Edit" : "Edit Plan"}
+          </button>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-green-500 underline'>
+            {isEditing ? "Cancel" : "Edit"}
+          </button>
+          <button
+            onClick={handleDelete}
+            className="bg-red-500 text-white px-4 py-2 md:inline hidden rounded hover:bg-red-600 ml-4 cursor-pointer"
+          >
+            Delete Plan
+          </button>
+          <button
+            onClick={handleDelete}
+            className="bg-transparent text-red-500 underline  md:hidden inline    cursor-pointer"
+          >
+            Delete
+          </button>
+        </div>
+
 
       </div>
-      
-{isEditing ? 
-      <EditPlanForm currentPlan={plan} onSave={handleSaveChanges} />
-    : 
-      <Plan />
-    }
+
+      {isEditing ?
+        <EditPlanForm currentPlan={plan} onSave={handleSaveChanges} />
+        :
+        <Plan />
+      }
     </div>
   );
 }

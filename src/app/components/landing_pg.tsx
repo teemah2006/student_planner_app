@@ -9,7 +9,7 @@ export default function Landing() {
     return (
         <div className="grid lg:grid-cols-2 lg:grid-rows-none grid-rows-2 lg:justify-items-between   w-full min-h-screen gap-16">
             <div>
-                <Image src={Images.student} alt="student image" className="h-[100%]" loading="lazy" />
+                <Image src={Images.student} alt="student image" className="h-[100%] w-full object-cover" loading="lazy" />
             </div>
             <div id="description" className="lg:my-auto mb-2 lg:mx-auto mx-4">
                 <h2 className="text-[30px] lg:text-[40px] md:text-[35px] font-bold"><span className="text-black">Maximize your study time with</span> <br /> <span className="text-blue-700">AI-powered planning!</span></h2>

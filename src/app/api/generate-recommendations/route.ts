@@ -9,6 +9,16 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
 
+async function isLinkValid(url: string): Promise<boolean> {
+    try {
+        const res = await fetch(url, { method: "HEAD" }); // HEAD request is faster
+        return res.ok;
+    } catch (error) {
+        console.error(`Invalid link: ${url}`, error);
+        return false;
+    }
+}
+
 
 
 export async function POST(req: Request) {
@@ -21,12 +31,22 @@ export async function POST(req: Request) {
         const prompt = `
       Today's date: ${currentDate}
       
-You are a smart assistant that provides REAL, useful study resources based on the user's subject, specific topics, weaknesses, learning style, and exam date.
+You are a smart assistant that provides only REAL, VERIFIED useful study resources based on the user's subject, specific topics, weaknesses, learning style, and exam date.
 
-ONLY return actual resources like:
-- YouTube videos or playlists
-- Free online textbooks or articles
-- Free study tools (flashcards, quizzes, simulations)
+Return only resources from **trusted platforms** such as:
+- YouTube (only verified playlists or videos with working links)
+- Khan Academy
+- OpenStax
+- StudyBlue
+- Quizlet
+- Official educational websites (.org, .edu)
+
+
+
+ONLY include links that are currently active and publicly accessible. Do **not invent** links. Only include actual links that work right now. Test the link before including it. If you're unsure a link is valid, do NOT include it.
+
+Each "link" field must begin with "https://" and lead to a real, reputable resource like YouTube, OpenStax, or Khan Academy.
+
 
 Respond in this exact JSON format:
 
@@ -49,7 +69,7 @@ User Details:
 - Topics: ${topics}
 - Weaknesses: ${weaknesses}
 - Learning Style: ${style}
-- Exam Date: ${examDate}
+- Exam Date: ${examDate ? examDate : null}
 
 
 
@@ -91,21 +111,35 @@ User Details:
             const userEmail = session.user.email;
             // Step 2: Parse the cleaned JSON
             const parsed = JSON.parse(data);
+            const validRecommendations = [];
+
+            for (const rec of parsed) {
+                const isValid = await isLinkValid(rec.link);
+                if (isValid) validRecommendations.push(rec);
+            }
+
 
             // Step 3: Save to Firebase
             try {
-                await addDoc(collection(db, 'recommendations'), {
-                  ...parsed,
-                  email: userEmail,
-                  createdAt: serverTimestamp(),
-                });
-            
-                 return NextResponse.json({ success: true }, { status: 200 });
-              } catch (err) {
+                if (validRecommendations.length > 0) {
+                    await addDoc(collection(db, 'recommendations'), {
+                       ...validRecommendations,
+                      email: userEmail,
+                      createdAt: serverTimestamp(),
+                    });
+                  } else{
+                    return NextResponse.json({ error: 'Error saving recommendation. Invalid URIs generated. please try again!' }, { status: 500 })
+                  }
+                  
+                console.log('fetched reco:', data)
+                return NextResponse.json({ success: true }, { status: 200 });
+            } catch (err) {
                 console.error(err);
                 return NextResponse.json({ error: 'Error saving recommendation' }, { status: 500 })
-              }
-             
+            }
+
+        } else {
+            return NextResponse.json({ error: "failed to generate recommendation. Please try again!" }, { status: 500 });
         }
 
     } catch (error) {
