@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../../utils/firebase";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -20,7 +19,7 @@ export async function GET(req: Request) {
     );
 
     const snapshot = await getDocs(q);
-    const recommendations: any[] = [];
+    const recommendations: {[key: string]: string| object}[]  = [];
 
     snapshot.forEach((doc) => {
       recommendations.push({

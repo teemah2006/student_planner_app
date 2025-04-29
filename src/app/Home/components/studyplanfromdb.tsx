@@ -6,18 +6,18 @@ import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
 
-type SessionType = {
+export type SessionType = {
   subject: string;
   topic: string;
   activity: string;
   timeInterval: string;
 };
 
-type DayPlan = {
+export type DayPlan = {
   day: string;
   sessions: SessionType[];
 };
-const deletePlan = async (userId: string) => {
+const deletePlan = async (userId: string ) => {
   const planRef = doc(db, "studyPlans", userId);
   await deleteDoc(planRef);
 };
@@ -50,7 +50,8 @@ export default function StudyPlanViewer() {
     };
 
     try {
-      await deletePlan(session?.user?.email!)
+      const userId = session?.user?.email
+      await deletePlan(userId? userId : '')
       setPlan(null);
       setIsEditing(false);
       alert('Study plan deleted!')
@@ -64,7 +65,8 @@ export default function StudyPlanViewer() {
   useEffect(() => {
     const fetchPlan = async () => {
       if (session?.user?.email) {
-        const docRef = doc(db, 'studyPlans', session.user.email);
+        try{
+          const docRef = doc(db, 'studyPlans', session.user.email);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -76,13 +78,21 @@ export default function StudyPlanViewer() {
           setPlan(null);
         }
         setLoading(false);
+        } catch(err){
+          console.log('error fetching data',err)
+          alert('Oops! An error occured, try checking your connection.')
+        }
+        
       }
     };
 
     fetchPlan();
   }, [session]);
 
-  if (status === 'loading' || loading) return <p className='text-gray-500'>Loading your study plan...</p>;
+  if (status === 'loading' || loading) return <div className="flex h-[100%] flex-col items-center justify-center">
+  <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+  <p className="mt-2 text-gray-500">Loading your study plan...</p>
+</div>;
   if (!plan) return <p className='text-gray-500'>No study plan found.</p>;
 
   const Plan = () => {
@@ -121,19 +131,20 @@ export default function StudyPlanViewer() {
 
   return (
 
-    <div className="md:p-4 p-2 space-y-6 md:col-span-2">
+    <div className=" overflow-auto space-y-4  p-4">
+      
       <div className='flex justify-between items-center'>
         <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
-        <div>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-green-500 md:inline hidden cursor-pointer hover:bg-green-700 rounded p-2'>
+        <div className='flex justify-between md:space-x-4'>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 md:inline hidden cursor-pointer hover:bg-blue-800 rounded p-2'>
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-green-500 underline'>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-500 underline'>
             {isEditing ? "Cancel" : "Edit"}
           </button>
           <button
             onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-2 md:inline hidden rounded hover:bg-red-600 ml-4 cursor-pointer"
+            className="bg-blue-100 text-blue-800 px-4 py-2 md:inline hidden rounded  hover:bg-blue-200  cursor-pointer"
           >
             Delete Plan
           </button>

@@ -23,7 +23,7 @@ export default function AuthPage() {
         
               <button
                 onClick={() => signIn("google", { callbackUrl: "/Home" })} // Redirects to homepage after login
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition cursor-pointer"
               >
                 Sign in with Google
               </button>

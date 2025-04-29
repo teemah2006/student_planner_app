@@ -103,7 +103,7 @@ export default function StudyPlanner() {
 } ;
 
   return (
-    <div className="w-full grid md:grid-cols-2 grid-rows-2 gap-x-4  justify-between   h-screen overflow-auto   p-6 md:p-10 bg-white  shadow-md text-black">
+    <div className="w-full bg-gray-100   h-screen overflow-auto   p-6 md:p-10   shadow-md text-black">
       <div className="flex-grow-0">
       <h2 className="text-xl md:text-2xl font-bold text-center ">AI Study Planner</h2>
 
@@ -149,7 +149,7 @@ export default function StudyPlanner() {
       {/* Subjects List */}
       <div className="mt-4  ">
         <h3 className="font-semibold">Selected Subjects:</h3>
-        <div className="grid  md:grid-cols-3 gap-4 grid-cols-2">
+        <div className="grid  md:grid-cols-3  gap-4 grid-cols-2">
           
           {subjects.length > 1? subjects.slice(1).map((subject, index) => (
             <div key={index}>
@@ -201,14 +201,14 @@ export default function StudyPlanner() {
       </div>
           
       {/* Generate Schedule Button */}
-      <div className="flex space-x-4">
-      <button className="mt-4 bg-yellow-500  text-gray-800 px-4 py-2 rounded w-full  cursor-pointer hover:bg-yellow-600"
+      <div className="flex justify-between  ">
+      <button className="mt-4 bg-blue-100 mr-2  text-blue-800 p-2 md:px-4 md:py-2 rounded w-full   cursor-pointer hover:bg-blue-200"
       onClick={clearInputs}>
             Clear inputs
           </button>
           <button
         onClick={generateSchedule}
-        className="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-green-700"
+        className="mt-4 bg-blue-600 text-white p-2 md:px-4 md:py-2 rounded w-full  cursor-pointer hover:bg-blue-800"
         disabled={loading}
       >
         {loading ? "Generating..." : "Generate Study Plan"}

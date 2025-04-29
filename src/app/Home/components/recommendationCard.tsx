@@ -9,17 +9,21 @@ type Recommendation =   {
     suitableFor:string
 }
 
-type Props = {
-    recommendation: Recommendation;
-  };
+
     
 
 
 
-export default function RecommendationCard({recommendation , deleteReco } : {recommendation: Recommendation, deleteReco: (link:any) => void} ) {
+export default function RecommendationCard({recommendation , deleteReco } : {recommendation: Recommendation, deleteReco?: ((link:string) => void)} ) {
 
+  
   const handleDelete = () => {
-    deleteReco(recommendation.link)
+    if (deleteReco){
+      deleteReco(recommendation.link)
+    } else{
+      return
+    }
+    
   }
     return (
       <div className="border p-4 rounded-md shadow hover:shadow-md transition bg-white space-y-2">
@@ -37,9 +41,12 @@ export default function RecommendationCard({recommendation , deleteReco } : {rec
         <div className="text-xs text-gray-500 italic">
           Type: {recommendation.type} | Best for: {recommendation.suitableFor}
         </div>
+        {deleteReco? 
         <button className="bg-transparent text-red-500 underline text-sm cursor-pointer" onClick={handleDelete}>
-          Delete recommendation
-        </button>
+        Delete resource
+      </button> : null
+        }
+        
         </div>
         
       </div>

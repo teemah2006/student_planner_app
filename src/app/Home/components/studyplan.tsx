@@ -29,6 +29,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   // }
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const [show, setShow] = useState(true);
   const savePlanToFirestore = async (plan: StudyPlan) => {
     setLoading(true);
 
@@ -45,6 +46,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
     if (docSnap.exists()) {
       alert('sorry, you can only save one study plan at a time!');
       setLoading(false);
+      setShow(false);
       return
     }
 
@@ -54,26 +56,34 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
         plan: plan.dailyPlan,
       });
       alert("Study plan saved successfully! 📚");
+      setShow(false);
     } catch (error) {
       console.error("Error saving study plan:", error);
-      alert("Failed to save study plan.");
+      alert("Failed to save study plan. Please try again");
     } finally {
       setLoading(false);
+
     }
   };
 
   return (
-    <div className=" bg-white rounded-lg shadow-lg border border-gray-200 text-black h-screen  p-4  overflow-auto " >
-      {plan ?
-        <div id="modal">
-          <div className="p-6">
+    show ? (
 
-            <h2 className="text-xl font-semibold mb-4"> Study Plan</h2>
+
+      <div id="modal" className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 text-black w-[90%] max-h-[90%] overflow-auto p-4 relative">
+          {loading && (
+            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75 z-10">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+          )}
+
+          {/* Your modal content (study plan) */}
+          <div className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Study Plan</h2>
             {plan.dailyPlan.map((dayPlan, dayIndex) => (
               <div key={dayIndex} className="mb-6">
-                <h2 className="text-xl font-semibold text-center text-blue-800 py-4">
-                  {dayPlan.day}
-                </h2>
+                <h2 className="text-xl font-semibold text-center text-blue-800 py-4">{dayPlan.day}</h2>
                 <table className="min-w-full text-sm text-gray-700">
                   <thead className="bg-blue-100">
                     <tr>
@@ -97,16 +107,26 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
               </div>
             ))}
           </div>
+
+          {/* Buttons */}
           <div className="sticky bottom-0 bg-white w-full z-2 p-2 flex justify-end gap-4 box-border">
-            <button className="bg-white border border-gray-600 cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent
-                    hover:text-white box-border px-4"
-              onClick={() => document.getElementById('modal')?.classList.add('hidden')}>Cancel</button>
-            <button className="bg-green-700 cursor-pointer px-4 p-2 rounded text-white  hover:bg-green-800 "
-              onClick={() => savePlanToFirestore(plan)}>{loading ? "Saving..." : "Save"}</button>
+            <button
+              className="bg-white border border-gray-600 cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
+              onClick={() => setShow(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-700 cursor-pointer px-4 p-2 rounded text-white hover:bg-blue-800"
+              onClick={() => savePlanToFirestore(plan)}
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
           </div>
-        </div> :
-        <div className="text-md text-gray-300">Generated study plan  will appear here</div>
-      }
-    </div>
+        </div>
+      </div>) : null
+
+
+
   )
 }

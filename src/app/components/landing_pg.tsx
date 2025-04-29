@@ -22,6 +22,7 @@ export default function Landing() {
                     GET STARTED
                 </button>
             </div>
+            <p className="fixed bottom-0 right-0 md:text-lg text-md text-blue-700 font-semibold">Built with love by Fatimah for Epex 2025</p>
         </div>
     )
 }
