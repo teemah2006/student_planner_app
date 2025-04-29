@@ -17,12 +17,13 @@ export default function Landing() {
                     and make learning stress-free. Start now and study smarter!
                 </div>
 
-                <button className="lg:p-6 p-[10px] md:p-[15px] bg-blue-700 rounded-xl lg:mt-12 mt-6 cursor-pointer font-bold hover:bg-blue-900 " 
+                <button className="lg:p-6 p-[12px] md:p-[15px] bg-blue-700 rounded-xl lg:mt-12 mt-6 cursor-pointer font-bold hover:bg-blue-900 " 
                 onClick={() => router.push("/authentication")}>
                     GET STARTED
                 </button>
+            <p className="text-right my-2 md:text-lg text-md text-blue-700 italic">Built with love by Fatimah for Epex 2025</p>
+
             </div>
-            <p className="fixed bottom-0 right-0 md:text-lg text-md text-blue-700 font-semibold">Built with love by Fatimah for Epex 2025</p>
         </div>
     )
 }

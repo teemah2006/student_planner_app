@@ -52,7 +52,7 @@ export default function DashboardGrid2() {
       };
       
 
-    const fetchStudyPlans = useCallback(() => async () => {
+    const fetchStudyPlans = async () => {
         if (session?.user?.email) {
             const docRef = doc(db, 'studyPlans', session.user.email);
             const docSnap = await getDoc(docRef);
@@ -101,9 +101,9 @@ export default function DashboardGrid2() {
                 setTodaySessions([]);
             }
         }
-    },[session?.user?.email]);
+    };
 
-    const fetchRecommendations = useCallback(() => async () => {
+    const fetchRecommendations =  async () => {
         setIsLoading(true)
         const res = await fetch('/api/getRecommendations');
         const data = await res.json();
@@ -119,15 +119,15 @@ export default function DashboardGrid2() {
             
         }
         setIsLoading(false)
-    },[]);
-
+    };
+// eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         // Fetch upcoming study plans
         fetchStudyPlans();
 
         // Fetch a few recommendations (maybe 3-4 max)
         fetchRecommendations();
-    },[fetchStudyPlans, fetchRecommendations]);
+    },[]);
     return (
         <div className="border bg-white w-full h-full min-h-screen md:p-12 hidden md:block grid grid-rows-2 gap-y-7">
             {/* Upcoming Study Sessions */}
