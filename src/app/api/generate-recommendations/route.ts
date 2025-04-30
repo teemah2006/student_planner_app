@@ -55,7 +55,33 @@ const fetchRecommendations = async (apiKey: string | undefined, query: string) =
 };
 
 const apiKey = process.env.YOUTUBE_API_KEY;
-
+async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          store: true,
+          messages: [{ role: "system", content: prompt }],
+          temperature: 0.7,
+        });
+  
+        return response.choices[0].message.content;
+      } catch (error: any) {
+        const status = error?.status || error?.response?.status;
+  
+        if (status === 429 || status >= 500) {
+          // Transient error – retry
+          console.warn(`Attempt ${attempt + 1} failed. Retrying...`);
+          await new Promise((res) => setTimeout(res, delay));
+        } else {
+          // Critical error – don’t retry
+          throw error;
+        }
+      }
+    }
+    throw new Error("Max retries reached. Failed to fetch from OpenAI.");
+  }
+  
 
 
 
@@ -147,19 +173,9 @@ export async function POST(req: Request) {
 
             `.trim();
 
-        const response = openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            store: true,
-            messages: [
-                { "role": "user", "content": prompt },
-            ],
-            temperature: 0.7
-        }
-        );
 
 
-        let data = (await response).choices[0].message.content;
-
+        let data = await fetchWithRetry(prompt, 3, 1500);
         // Step 1: Clean the AI response
         if (data) {
             if (data.startsWith("```") && data.endsWith("```")) {
