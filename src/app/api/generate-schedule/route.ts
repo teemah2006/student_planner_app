@@ -13,7 +13,7 @@ const openai = new OpenAI({
           const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             store: true,
-            messages: [{ role: "system", content: prompt }],
+            messages: [{ role: "user", content: prompt }],
             temperature: 0.7,
           });
     

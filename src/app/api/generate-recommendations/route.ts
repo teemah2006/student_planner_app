@@ -61,7 +61,7 @@ async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
         const response = await openai.chat.completions.create({
           model: "gpt-4o-mini",
           store: true,
-          messages: [{ role: "system", content: prompt }],
+          messages: [{ role: "user", content: prompt }],
           temperature: 0.7,
         });
   
