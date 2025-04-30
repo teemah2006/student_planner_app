@@ -5,6 +5,7 @@ import { SetStateAction, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
+import Link from 'next/link';
 
 export type SessionType = {
   subject: string;
@@ -93,7 +94,7 @@ export default function StudyPlanViewer() {
   <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
   <p className="mt-2 text-gray-500">Loading your study plan...</p>
 </div>;
-  if (!plan) return <p className='text-gray-500'>No study plan found.</p>;
+  if (!plan) return <p className='text-gray-500'>No study plan found. <Link href="/Home/Schedule_generator" className="text-blue-500 underline">Tap here to create</Link></p>;
 
   const Plan = () => {
     return (

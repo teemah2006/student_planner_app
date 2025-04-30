@@ -2,12 +2,14 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../../utils/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import nodemailer from 'nodemailer';
+import { toZonedTime } from 'date-fns-tz'; // Add this import
 
 export async function GET() {
   try {
     // 1. Get all study plans
     const querySnapshot = await getDocs(collection(db, 'studyPlans'));
-    const now = new Date();
+    const timeZone = 'Africa/Lagos'; // or dynamically get user timezone if stored
+    const now = toZonedTime(new Date(), timeZone);
 
     for (const docSnap of querySnapshot.docs) {
       const userData = docSnap.data();
@@ -32,14 +34,22 @@ export async function GET() {
       // 4. Check each session if it's about to start within 30 min
       for (const session of todayPlan.sessions) {
         const startTime = session.timeInterval.split(' - ')[0].trim(); // "6:00pm"
+        const [hour, minute] = convertTo24Hr(startTime);
+
         const sessionDate = new Date(
           now.getFullYear(),
           now.getMonth(),
           now.getDate(),
-          ...convertTo24Hr(startTime)
+          hour,
+          minute
         );
 
-        const diffMinutes = (sessionDate.getTime() - now.getTime()) / (1000 * 60);
+        // Apply timezone to sessionDate
+        const zonedSessionDate = toZonedTime(sessionDate, timeZone);
+
+
+
+        const diffMinutes = (zonedSessionDate.getTime() - now.getTime()) / (1000 * 60);
 
         if (diffMinutes > 25 && diffMinutes < 35) {
           // If session is between 25-35 minutes away

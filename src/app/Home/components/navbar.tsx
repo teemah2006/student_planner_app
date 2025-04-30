@@ -27,7 +27,7 @@ export default function Navbar() {
         <nav className="h-full md:min-h-screen md:w-[25%] lg:w-[25%] w-full bg-blue-700 md:space-x-0  space-y-auto p-4 flex flex-col lg:space-y-12 md:space-y-10">
             <div className="justify-between flex flex-row">
                 <div className="md:text-xl text-xl lg:text-2xl font-bold"><span className="text-white">Study</span><span className="text-yellow-500">Ease</span></div>
-                <Link href="/Home" onClick={() => signOut()} className={LinkClasses + 'md:hidden text-gray-100 flex-row'}><FaArrowRightFromBracket />Log Out</Link>
+                <Link href="/authentication" onClick={() => signOut()} className={LinkClasses + 'md:hidden text-gray-100 flex-row'}><FaArrowRightFromBracket />Log Out</Link>
 
             </div>
 
