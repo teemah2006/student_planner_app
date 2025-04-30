@@ -21,7 +21,7 @@ export default function Landing() {
                 onClick={() => router.push("/authentication")}>
                     GET STARTED
                 </button>
-            {/* <p className="text-right my-2 md:text-lg text-md text-blue-700 italic">Built with love by Fatimah for Epex 2025</p> */}
+            <p className="text-right my-2 md:text-lg text-md text-blue-700 italic">Built with love by Fatimah for Epex 2025</p>
 
             </div>
         </div>
