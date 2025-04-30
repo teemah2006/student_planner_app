@@ -12,9 +12,12 @@ export async function GET() {
     for (const docSnap of querySnapshot.docs) {
       const userData = docSnap.data();
       const userEmail = docSnap.id; // because you used email as doc id
-      const createdAt = userData.createdAt?.seconds
-        ? new Date(userData.createdAt.seconds * 1000)
-        : new Date(userData.createdAt);
+      const createdAt = userData.createdAt.toDate()
+
+      // ?.seconds
+      //   ? new Date(userData.createdAt.seconds * 1000)
+      //   : new Date(userData.createdAt);
+      // console.log(createdAt)
 
       // 2. Calculate today
       const diffInMs = now.getTime() - createdAt.getTime();
@@ -54,7 +57,7 @@ export async function GET() {
 
 // Convert "6:00pm" to [18, 0]
 function convertTo24Hr(timeStr: string): [number, number] {
-  const [time, modifier] = timeStr.split(/(am|pm)/i);
+  const [time, modifier] = timeStr.split(/(am|pm)/);
   const [rawHours, minutes] = time.split(':').map(Number);
   let hours = rawHours;
 
