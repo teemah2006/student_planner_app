@@ -57,22 +57,15 @@ Instructions:
 }
 
 
-    `;
+    `.trim();
 
     const response = openai.chat.completions.create({
         model: "gpt-4o-mini",
         store: true,
         messages: [
-          {"role": "system", "content": prompt},
+          {"role": "user", "content": prompt},
         ],
         temperature: 0.7
-      },
-    
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
       }
     );
 

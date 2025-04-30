@@ -95,7 +95,7 @@ async function sendEmail(to: string, subject: string, time: string) {
   
   You got this! Keep pushing! 🚀
   
-  - Your Study Buddy`,
+  - Your Study Buddy from StudyEase`,
   });
   console.log('Email sent');
 }
