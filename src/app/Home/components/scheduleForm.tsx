@@ -140,7 +140,7 @@ export default function StudyPlanner() {
 
         <button
           onClick={addSubject}
-          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
+          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded w-full font-semibold cursor-pointer hover:bg-blue-700"
         >
           Add Subject
         </button>
@@ -202,13 +202,13 @@ export default function StudyPlanner() {
           
       {/* Generate Schedule Button */}
       <div className="flex justify-between  ">
-      <button className="mt-4 bg-blue-100 mr-2  text-blue-800 p-2 md:px-4 md:py-2 rounded w-full   cursor-pointer hover:bg-blue-200"
+      <button className="mt-4 bg-blue-100 mr-2  text-blue-800 p-2 md:px-4 md:py-2 rounded w-full font-semibold  cursor-pointer hover:bg-blue-200"
       onClick={clearInputs}>
             Clear inputs
           </button>
           <button
         onClick={generateSchedule}
-        className="mt-4 bg-blue-600 text-white p-2 md:px-4 md:py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
+        className="mt-4 bg-blue-600 text-white p-2 md:px-4 md:py-2 rounded w-full font-semibold cursor-pointer hover:bg-blue-700"
         disabled={loading}
       >
         {loading ? "Generating..." : "Generate Study Plan"}

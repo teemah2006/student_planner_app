@@ -111,13 +111,13 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
           {/* Buttons */}
           <div className="sticky -bottom-2 bg-white w-full z-2 p-2 flex justify-end space-x-4 box-border">
             <button
-              className="bg-white border border-gray-600 cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
+              className="bg-white border border-gray-600 font-semibold cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
               onClick={() => setShow(false)}
             >
               Cancel
             </button>
             <button
-              className="bg-blue-700 cursor-pointer px-4 p-2 rounded text-white hover:bg-blue-800"
+              className="bg-blue-700 cursor-pointer px-4 p-2 font-semibold rounded text-white hover:bg-blue-800"
               onClick={() => savePlanToFirestore(plan)}
             >
               {loading ? "Saving..." : "Save"}

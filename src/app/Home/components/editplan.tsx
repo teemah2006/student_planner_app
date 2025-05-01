@@ -64,7 +64,7 @@ export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any
 
       <button
         onClick={handleSave}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
+        className="bg-blue-600 text-white px-4 py-2 font-semibold rounded hover:bg-blue-700 cursor-pointer"
       >
         Save Changes
       </button>
