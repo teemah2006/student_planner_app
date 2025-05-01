@@ -28,6 +28,7 @@ export default function StudyPlanViewer() {
   const [plan, setPlan] = useState<DayPlan[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
 
   const handleSaveChanges = async (editedPlan: SetStateAction<DayPlan[] | null>) => {
@@ -50,15 +51,19 @@ export default function StudyPlanViewer() {
       return
     };
 
+    setDeleting(true)
+
     try {
       const userId = session?.user?.email
       await deletePlan(userId? userId : '')
       setPlan(null);
       setIsEditing(false);
       alert('Study plan deleted!')
+      setDeleting(false);
     } catch (error) {
       console.log('error deleting plan', error)
       alert('something went wrong while deleting.')
+      setDeleting(false);
     }
   }
 
@@ -137,17 +142,17 @@ export default function StudyPlanViewer() {
       <div className='flex justify-between items-center'>
         <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
         <div className='flex justify-between md:space-x-4'>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 md:inline hidden cursor-pointer hover:bg-blue-800 rounded p-2'>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 md:inline hidden cursor-pointer hover:bg-blue-700 rounded p-2'>
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-500 underline'>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-600 underline'>
             {isEditing ? "Cancel" : "Edit"}
           </button>
           <button
             onClick={handleDelete}
             className="bg-blue-100 text-blue-800 px-4 py-2 md:inline hidden rounded  hover:bg-blue-200  cursor-pointer"
           >
-            Delete Plan
+           {deleting? 'Deleting...' : 'Delete Plan'} 
           </button>
           <button
             onClick={handleDelete}

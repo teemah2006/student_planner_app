@@ -103,7 +103,7 @@ export default function StudyPlanner() {
 } ;
 
   return (
-    <div className="w-full bg-gray-100   h-screen overflow-auto   p-6 md:p-10   shadow-md text-black">
+    <div className="w-full bg-gray-100   h-screen overflow-auto  p-4 md:p-6 md:p-10   shadow-md text-black">
       <div className="flex-grow-0">
       <h2 className="text-xl md:text-2xl font-bold text-center ">AI Study Planner</h2>
 
@@ -140,7 +140,7 @@ export default function StudyPlanner() {
 
         <button
           onClick={addSubject}
-          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
+          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
         >
           Add Subject
         </button>
@@ -208,7 +208,7 @@ export default function StudyPlanner() {
           </button>
           <button
         onClick={generateSchedule}
-        className="mt-4 bg-blue-600 text-white p-2 md:px-4 md:py-2 rounded w-full  cursor-pointer hover:bg-blue-800"
+        className="mt-4 bg-blue-600 text-white p-2 md:px-4 md:py-2 rounded w-full  cursor-pointer hover:bg-blue-700"
         disabled={loading}
       >
         {loading ? "Generating..." : "Generate Study Plan"}

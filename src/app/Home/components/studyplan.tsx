@@ -109,7 +109,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
           </div>
 
           {/* Buttons */}
-          <div className="sticky bottom-0 bg-white w-full z-2 p-2 flex justify-end gap-4 box-border">
+          <div className="sticky bottom-0 bg-white w-full z-2 p-2 flex justify-end space-x-4 box-border">
             <button
               className="bg-white border border-gray-600 cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
               onClick={() => setShow(false)}

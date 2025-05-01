@@ -15,6 +15,7 @@ export default function DashboardGrid2() {
     const { data: session } = useSession();
     const [todaySessions, setTodaySessions] = useState<SessionType[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentDay, setCurrentDay] = useState('')
 
     function convertTo24Hr(time: string): string {
         const [timePart, modifier] = time.split(/(am|pm)/);
@@ -64,7 +65,7 @@ export default function DashboardGrid2() {
                 
                     if (data) {
                       const currentDayName = calculateCurrentDay(data.createdAt);
-                      console.log(currentDayName)
+                      
                   
                       const todayPlan = data.plan.find((dayObj: any) => dayObj.day === currentDayName);
                   
@@ -90,8 +91,10 @@ export default function DashboardGrid2() {
                             return sessionMinutes > nowMinutes;
                           });
                           console.log(filteredPlan)
+                          setCurrentDay(currentDayName);
                         setTodaySessions(filteredPlan);
                       } else {
+                        setCurrentDay('')
                         setTodaySessions([]);
                       }
                     }
@@ -135,10 +138,10 @@ export default function DashboardGrid2() {
                 <h2 className="text-2xl font-semibold mb-4 text-black">Upcoming Study Sessions</h2>
                 {todaySessions.length > 0 ? (
                     <div className="plans-preview">
+                        <h3 className="font-semibold text-xl mb-2 text-blue-800">{currentDay}</h3>
                         {todaySessions.map((session, index) => (
                             <div key={index}>
-                                {/* <h3 className="font-semibold text-lg mb-2 text-blue-800">{plan.day}</h3> */}
-                               
+                                
                                     <li  className="border p-3 rounded-xl hover:bg-gray-100 transition mb-4 ">
                                         <p className="font-medium text-blue-800">{session.subject}</p>
                                         <p className="text-sm text-gray-500">{session.timeInterval}</p>
