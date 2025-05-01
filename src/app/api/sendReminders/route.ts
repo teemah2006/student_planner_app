@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../../utils/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import nodemailer from 'nodemailer';
-import { toZonedTime } from 'date-fns-tz'; // Add this import
+import { utcToZonedTime } from 'date-fns-tz';
 
 export async function GET() {
   try {
     // 1. Get all study plans
     const querySnapshot = await getDocs(collection(db, 'studyPlans'));
     const timeZone = 'Africa/Lagos'; // or dynamically get user timezone if stored
-    const now = toZonedTime(new Date(), timeZone);
+    const now = utcToZonedTime(new Date(), timeZone);
 
     for (const docSnap of querySnapshot.docs) {
       const userData = docSnap.data();
@@ -24,7 +24,18 @@ export async function GET() {
       // 2. Calculate today
       const diffInMs = now.getTime() - createdAt.getTime();
       const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-      const currentDay = `Day ${diffInDays + 1}`;
+      const day = diffInDays + 1
+      let currentDay = '';
+      if(day > 7){
+          if (day % 7 === 0){
+            currentDay = `Day 7`
+          } else if (day % 7 !== 0){
+            currentDay = `Day ${day % 7}`
+          }
+      } else {
+        currentDay = `Day ${day}`;
+      }
+       
 
       // 3. Find today's plan
       const todayPlan = userData.plan.find((dayObj: { day: string, sessions: [] }) => dayObj.day === currentDay);
@@ -45,7 +56,7 @@ export async function GET() {
         );
 
         // Apply timezone to sessionDate
-        const zonedSessionDate = toZonedTime(sessionDate, timeZone);
+        const zonedSessionDate = utcToZonedTime(sessionDate, timeZone);
 
 
 

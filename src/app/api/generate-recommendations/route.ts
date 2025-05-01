@@ -94,7 +94,7 @@ export async function POST(req: Request) {
 
         if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         if (style === "visual") {
-            const query = `${subject} ${weaknesses}`;
+            const query = `${subject} ${topics} ${weaknesses}`;
 
 
 

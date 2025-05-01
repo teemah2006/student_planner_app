@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useState, useEffect , useCallback } from "react";
 import Link from "next/link";
@@ -120,7 +120,7 @@ export default function DashboardGrid2() {
         }
         setIsLoading(false)
     };
-// eslint-disable-next-line react-hooks/exhaustive-deps
+
     useEffect(() => {
         // Fetch upcoming study plans
         fetchStudyPlans();
