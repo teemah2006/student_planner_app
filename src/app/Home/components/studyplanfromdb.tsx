@@ -139,27 +139,27 @@ export default function StudyPlanViewer() {
 
     <div className=" overflow-auto space-y-4  p-4">
       
-      <div className='flex justify-between items-center'>
+      <div className=''>
         <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
-        <div className='flex justify-between md:space-x-4'>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 md:inline hidden cursor-pointer hover:bg-blue-700 rounded p-2'>
+        <div className='flex float-right justify-between space-x-2 my-4 md:space-x-4'>
+          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 md:text-md text-sm  cursor-pointer hover:bg-blue-700 rounded p-2'>
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-600 underline'>
+          {/* <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-600 underline'>
             {isEditing ? "Cancel" : "Edit"}
-          </button>
+          </button> */}
           <button
             onClick={handleDelete}
-            className="bg-blue-100 text-blue-800 px-4 py-2 md:inline hidden rounded  hover:bg-blue-200  cursor-pointer"
+            className="bg-blue-100 text-blue-800 md:px-4 md:py-2 p-2 md:text-md text-sm  rounded  hover:bg-blue-200  cursor-pointer"
           >
            {deleting? 'Deleting...' : 'Delete Plan'} 
           </button>
-          <button
+          {/* <button
             onClick={handleDelete}
             className="bg-transparent text-red-500 underline  md:hidden inline    cursor-pointer"
           >
             Delete
-          </button>
+          </button> */}
         </div>
 
 

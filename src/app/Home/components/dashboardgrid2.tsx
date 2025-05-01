@@ -132,7 +132,7 @@ export default function DashboardGrid2() {
         fetchRecommendations();
     },[]);
     return (
-        <div className="border bg-white w-full h-full min-h-screen md:p-12 hidden md:block grid grid-rows-2 gap-y-7">
+        <div className="border bg-white w-full h-full min-h-screen md:p-6 lg:p-10 hidden md:block grid grid-rows-2 gap-y-7">
             {/* Upcoming Study Sessions */}
             <section className="">
                 <h2 className="text-2xl font-semibold mb-4 text-black">Upcoming Study Sessions</h2>

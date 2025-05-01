@@ -55,12 +55,10 @@ export async function GET() {
           minute
         );
 
-        // Apply timezone to sessionDate
-        const zonedSessionDate = utcToZonedTime(sessionDate, timeZone);
 
 
 
-        const diffMinutes = (zonedSessionDate.getTime() - now.getTime()) / (1000 * 60);
+        const diffMinutes = (sessionDate.getTime() - now.getTime()) / (1000 * 60);
 
         if (diffMinutes > 25 && diffMinutes < 35) {
           // If session is between 25-35 minutes away

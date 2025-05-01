@@ -26,7 +26,7 @@ export default function RecommendationCard({recommendation , deleteReco } : {rec
     
   }
     return (
-      <div className="border p-4 rounded-md shadow hover:shadow-md transition bg-white space-y-2">
+      <div className="border p-4 overflow-auto rounded-md shadow hover:shadow-md transition bg-white space-2">
         <h3 className="text-lg font-semibold text-blue-800">{recommendation.title}</h3>
         <p className="text-sm text-gray-600">{recommendation.description}</p>
         <a

@@ -109,7 +109,7 @@ export default function RecommendationsPage() {
 
   return (
     <div className="md:p-6 p-4 w-full  space-y-6 bg-gray-100 h-screen overflow-auto">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between space-x-2 items-center">
         <h1 className="lg:text-3xl md:text-2xl text-xl font-bold text-gray-800">AI Study Recommendations</h1>
         <button
           onClick={() => setShowForm(!showForm)}
