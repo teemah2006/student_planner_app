@@ -7,7 +7,6 @@ import { useState } from "react";
 
 export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any, onSave: (updatedPlan: any) => void }) {
   const [editedPlan, setEditedPlan] = useState(currentPlan || []);
-  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (dayIndex: number,sessionIndex: number, field: string, value: string) => {
     const updatedPlan = [...editedPlan];
@@ -68,7 +67,7 @@ export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any
         onClick={handleSave}
         className="bg-blue-600 text-white px-4 py-2 font-semibold rounded hover:bg-blue-700 cursor-pointer"
       >
-        {isSaving ? 'Saving...' : 'Save Changes'}
+        Save Changes
       </button>
     </div>
   );
