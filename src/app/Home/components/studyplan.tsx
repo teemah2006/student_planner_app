@@ -79,7 +79,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
           )}
 
           {/* Your modal content (study plan) */}
-          <div className="p-6">
+          <div className="p-6 overflow-auto">
             <h2 className="text-xl font-semibold mb-4">Study Plan</h2>
             {plan.dailyPlan.map((dayPlan, dayIndex) => (
               <div key={dayIndex} className="mb-6">
@@ -109,7 +109,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
           </div>
 
           {/* Buttons */}
-          <div className="fixed -bottom-4 bg-white w-full z-2 p-2 flex justify-end space-x-4 box-border">
+          <div className="sticky -bottom-4  bg-white w-full z-2 p-2 flex justify-end space-x-4 box-border">
             <button
               className="bg-white border border-gray-600 font-semibold cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
               onClick={() => setShow(false)}

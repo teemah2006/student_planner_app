@@ -22,9 +22,7 @@ export default function EditPlanForm({ currentPlan, onSave }: { currentPlan: any
   };
 
   const handleSave = () => {
-    setIsSaving(true);
     onSave(editedPlan);
-    setIsSaving(false)
 
   };
   if (!Array.isArray(editedPlan)) {

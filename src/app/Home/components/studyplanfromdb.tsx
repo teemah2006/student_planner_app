@@ -35,7 +35,8 @@ export default function StudyPlanViewer() {
 
     if (!session?.user?.email) return;
 
-    const docRef = doc(db, "studyPlans", session.user.email);
+    try{
+      const docRef = doc(db, "studyPlans", session.user.email);
     await setDoc(docRef, {
       createdAt: new Date(),
       plan: editedPlan,
@@ -43,6 +44,12 @@ export default function StudyPlanViewer() {
 
     setPlan(editedPlan);
     setIsEditing(false);
+    alert('Changes saved sucessfully!')
+    } catch{
+      alert('Something went wrong please try again.')
+    }
+
+    
   };
 
   const handleDelete = async () => {
@@ -145,21 +152,14 @@ export default function StudyPlanViewer() {
           <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 font-semibold md:text-md text-sm  cursor-pointer hover:bg-blue-700 rounded p-2'>
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
-          {/* <button onClick={() => setIsEditing(!isEditing)} className='bg-transparent mr-2 md:hidden inline cursor-pointer text-blue-600 underline'>
-            {isEditing ? "Cancel" : "Edit"}
-          </button> */}
+          
           <button
             onClick={handleDelete}
             className="bg-blue-100 text-blue-800 md:px-4 md:py-2 p-2 md:text-md text-sm font-semibold rounded  hover:bg-blue-200  cursor-pointer"
           >
            {deleting? 'Deleting...' : 'Delete Plan'} 
           </button>
-          {/* <button
-            onClick={handleDelete}
-            className="bg-transparent text-red-500 underline  md:hidden inline    cursor-pointer"
-          >
-            Delete
-          </button> */}
+          
         </div>
 
 
