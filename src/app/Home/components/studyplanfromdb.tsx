@@ -37,10 +37,15 @@ export default function StudyPlanViewer() {
 
     try{
       const docRef = doc(db, "studyPlans", session.user.email);
-    await setDoc(docRef, {
-      createdAt: new Date(),
-      plan: editedPlan,
-    }); // overwrite with new data
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()){
+     // overwrite with new data
+        const planData = docSnap.data();
+        await setDoc(docRef, {
+          createdAt: planData.createdAt,
+          plan: editedPlan,
+        });
+      } 
 
     setPlan(editedPlan);
     setIsEditing(false);
