@@ -8,7 +8,6 @@ export default function ResourceViewer() {
     const searchParams = useSearchParams();
     const videoUrl = searchParams.get('video');
     const videoTitle = searchParams.get('title');
-    const description = searchParams.get('desc')
     if (!session) {
         return <p>You must be signed in to view this page.</p>;
     };
@@ -38,8 +37,7 @@ export default function ResourceViewer() {
                     />
                 )}
                 <div className="mt-6 grid gap-4">
-                <h3 className="text-lg md:text-2xl font-semibold text-blue-800">Video title: {videoTitle}</h3>
-                <p className="text-md md:text-lg text-gray-600">{description}</p>
+                <h3 className="text-lg md:text-2xl font-semibold text-blue-800 bg-blue-100 border-l-8 border-blue-800 p-4 md:p-6 w-full h-max ">Video title: {videoTitle}</h3>
                 </div>
                 
 
