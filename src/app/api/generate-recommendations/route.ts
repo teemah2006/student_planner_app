@@ -45,7 +45,7 @@ async function isLinkValid(url: string): Promise<boolean> {
         return false;
     }
 }
-const fetchRecommendations = async (apiKey: string | undefined, query: string | undefined) => {
+const fetchRecommendations = async (apiKey: string | undefined, query: string ) => {
     console.log("apikey", apiKey, query)
     if (!apiKey || !query) {
         throw new Error('Missing required parameters: apiKey or query');
