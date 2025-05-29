@@ -46,7 +46,7 @@ async function isLinkValid(url: string): Promise<boolean> {
     }
 }
 const fetchRecommendations = async (apiKey: string | undefined, query: string | undefined) => {
-    console.log("apikey", apiKey)
+    console.log("apikey", apiKey, query)
     if (!apiKey || !query) {
         throw new Error('Missing required parameters: apiKey or query');
     }
@@ -97,13 +97,13 @@ async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
 
 export async function POST(req: Request) {
     try {
-        const { subject, topics, weaknesses, style, examDate } = await req.json();
+        const { subject, topics, weakness, style, examDate } = await req.json();
         const session = await getServerSession();
         const validRecommendations: string | any[] | DocumentData = []
 
         if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         if (style === "visual") {
-            const query = `${subject} ${topics} ${weaknesses}`;
+            const query = `${subject} ${topics} ${weakness}`;
 
 
 
@@ -177,7 +177,7 @@ export async function POST(req: Request) {
         User Details:
         - Subject: ${subject}
         - Topics: ${topics}
-        - Weaknesses: ${weaknesses}
+        - Weaknesses: ${weakness}
         - Learning Style: ${style}
         - Exam Date: ${examDate ? examDate : null}
 

@@ -14,6 +14,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLFormElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(`form data`, formData)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
