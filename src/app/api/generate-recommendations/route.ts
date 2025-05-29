@@ -8,6 +8,8 @@ import { getServerSession } from "next-auth";
 import { getAuth } from "firebase/auth";
 import { adminDb } from "../../../../utils/firebaseAdmin";
 
+const youtubeApiKey = process.env.YOUTUBE_API_KEY;
+
 const currentDate = new Date().toISOString().split("T")[0];
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -63,7 +65,7 @@ const fetchRecommendations = async (apiKey: string | undefined, query: string | 
     }
 };
 
-const apiKey = process.env.YOUTUBE_API_KEY;
+
 async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
@@ -107,7 +109,7 @@ export async function POST(req: Request) {
 
 
 
-            const videos = await fetchRecommendations(apiKey, query);
+            const videos = await fetchRecommendations(youtubeApiKey?.toString(), query);
             console.log('Recommended videos:', videos);
 
 
