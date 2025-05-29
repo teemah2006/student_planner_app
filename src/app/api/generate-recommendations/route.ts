@@ -49,8 +49,14 @@ async function isLinkValid(url: string): Promise<boolean> {
 }
 const fetchRecommendations = async (apiKey: string | undefined, query: string | undefined) => {
     console.log("apikey", apiKey, query)
-    if (!apiKey || !query) {
-        throw new Error('Missing required parameters: apiKey or query');
+
+    // More explicit validation
+    if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
+        throw new Error('Missing or invalid API key');
+    }
+
+    if (!query || typeof query !== 'string' || query.trim() === '') {
+        throw new Error('Missing or invalid query parameter');
     }
 
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${apiKey}`;
@@ -61,7 +67,7 @@ const fetchRecommendations = async (apiKey: string | undefined, query: string | 
         return data.items;
     } catch (error) {
         console.error('Error fetching YouTube data:', error);
-        throw error; // re-throw for logging upstream
+        throw error;
     }
 };
 
@@ -107,9 +113,14 @@ export async function POST(req: Request) {
         if (style === "visual") {
             const query = `${subject} ${topics} ${weakness}`;
 
-
+            // Add validation before the function call
+            if (!query) {
+                throw new Error('Query parameter is required');
+            }
 
             const videos = await fetchRecommendations(youtubeApiKey?.toString(), query);
+
+            // const videos = await fetchRecommendations(youtubeApiKey?.toString(), query);
             console.log('Recommended videos:', videos);
 
 
