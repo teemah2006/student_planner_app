@@ -2,6 +2,7 @@ import "../globals.css";
 import SessionProvider from "../components/SessionProvider";
 import Navbar from "./components/navbar";
 import { MobileNav } from "./components/navbar";
+import AuthSync from "../components/authSync";
 
 export default function RootLayout({
   children,
@@ -14,7 +15,9 @@ export default function RootLayout({
         className= "flex flex-col md:flex-row"
       >
         
-        <SessionProvider><Navbar/>{children}<MobileNav/></SessionProvider>
+        <SessionProvider>
+          <AuthSync />
+          <Navbar/>{children}<MobileNav/></SessionProvider>
       </main>
   );
 }

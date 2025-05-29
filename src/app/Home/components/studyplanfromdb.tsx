@@ -1,11 +1,12 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession , getSession } from 'next-auth/react';
 import { SetStateAction, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../../../utils/firebase'; // make sure this file is correctly configured
+import { db, auth } from '../../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
 import Link from 'next/link';
+import { onAuthStateChanged } from "firebase/auth";
 
 export type SessionType = {
   subject: string;
@@ -29,14 +30,16 @@ export default function StudyPlanViewer() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const sessionTwo =  getSession()
 
 
   const handleSaveChanges = async (editedPlan: SetStateAction<DayPlan[] | null>) => {
 
-    if (!session?.user?.email) return;
+    if (!auth.currentUser) return;
 
     try{
-      const docRef = doc(db, "studyPlans", session.user.email);
+      const user = auth.currentUser;
+      const docRef = doc(db, "studyPlans", user?.uid? user?.uid: '');
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()){
      // overwrite with new data
@@ -66,8 +69,10 @@ export default function StudyPlanViewer() {
     setDeleting(true)
 
     try {
-      const userId = session?.user?.email
-      await deletePlan(userId? userId : '')
+      const user = auth.currentUser;
+      const uid = user?.uid;
+      // const userId = session?.user?.email
+      await deletePlan(uid? uid : '')
       setPlan(null);
       setIsEditing(false);
       alert('Study plan deleted!')
@@ -81,31 +86,35 @@ export default function StudyPlanViewer() {
 
 
   useEffect(() => {
-    const fetchPlan = async () => {
-      if (session?.user?.email) {
-        try{
-          const docRef = doc(db, 'studyPlans', session.user.email);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert("User not authenticated.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "studyPlans", user.uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log('Fetched data:', data);
+          console.log("Fetched data:", data);
           setPlan(data.plan);
         } else {
-          console.log('No document found for:', session.user.email);
+          console.log("No document found for:", user.uid);
           setPlan(null);
         }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        alert("Oops! An error occurred, try checking your connection.");
+      } finally {
         setLoading(false);
-        } catch(err){
-          console.log('error fetching data',err)
-          alert('Oops! An error occured, try checking your connection.')
-        }
-        
       }
-    };
+    });
 
-    fetchPlan();
-  }, [session]);
+    return () => unsubscribe();
+  }, []);
 
   if (status === 'loading' || loading) return <div className="flex h-[100%] flex-col items-center justify-center">
   <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>

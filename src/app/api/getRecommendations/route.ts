@@ -1,39 +1,36 @@
-import { NextResponse } from "next/server";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../../utils/firebase";
-import { getServerSession } from "next-auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextRequest, NextResponse } from "next/server";
+import { adminAuth, adminDb } from "../../../../utils/firebaseAdmin";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.split("Bearer ")[1];
+
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 401 });
+  }
+
   try {
-    const session = await getServerSession();
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Verify token
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    const uid = decodedToken.uid;
+
+    if (!uid) {
+      return NextResponse.json({ error: "uid not available" }, { status: 401 });
     }
 
-    const userEmail = session.user.email;
+    // ✅ Use adminDb here
+    const recRef = adminDb.collection("users").doc(uid).collection("recommendations");
+    const snapshot = await recRef.get();
 
-    // Get only documents that belong to this user
-    const q = query(
-      collection(db, "recommendations"),
-      where("email", "==", userEmail)
-    );
-
-    const snapshot = await getDocs(q);
-    const recommendations: {[key: string]: string| object}[]  = [];
-
+    const recommendations: any[] = [];
     snapshot.forEach((doc) => {
-      recommendations.push({
-        id: doc.id,
-        ...doc.data(),
-      });
+      recommendations.push({ id: doc.id, ...doc.data() });
     });
 
     return NextResponse.json(recommendations, { status: 200 });
   } catch (error) {
     console.error("Error fetching recommendations:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch recommendations" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch recommendations" }, { status: 500 });
   }
 }

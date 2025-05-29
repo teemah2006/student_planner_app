@@ -5,6 +5,9 @@ import OpenAI from "openai";
 import { db } from "../../../../utils/firebase";
 import { collection, addDoc, serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getServerSession } from "next-auth";
+import { getAuth } from "firebase/auth";
+import { adminDb } from "../../../../utils/firebaseAdmin";
+
 const currentDate = new Date().toISOString().split("T")[0];
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -57,31 +60,31 @@ const fetchRecommendations = async (apiKey: string | undefined, query: string) =
 const apiKey = process.env.YOUTUBE_API_KEY;
 async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
     for (let attempt = 0; attempt < retries; attempt++) {
-      try {
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          store: true,
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-        });
-  
-        return response.choices[0].message.content;
-      } catch (error: any) {
-        const status = error?.status || error?.response?.status;
-  
-        if (status === 429 || status >= 500) {
-          // Transient error – retry
-          console.warn(`Attempt ${attempt + 1} failed. Retrying...`);
-          await new Promise((res) => setTimeout(res, delay));
-        } else {
-          // Critical error – don’t retry
-          throw error;
+        try {
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o-mini",
+                store: true,
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.7,
+            });
+
+            return response.choices[0].message.content;
+        } catch (error: any) {
+            const status = error?.status || error?.response?.status;
+
+            if (status === 429 || status >= 500) {
+                // Transient error – retry
+                console.warn(`Attempt ${attempt + 1} failed. Retrying...`);
+                await new Promise((res) => setTimeout(res, delay));
+            } else {
+                // Critical error – don’t retry
+                throw error;
+            }
         }
-      }
     }
     throw new Error("Max retries reached. Failed to fetch from OpenAI.");
-  }
-  
+}
+
 
 
 
@@ -101,7 +104,7 @@ export async function POST(req: Request) {
             const videos = await fetchRecommendations(apiKey, query);
             console.log('Recommended videos:', videos);
 
-            
+
 
             for (const video of videos) {
                 if (validRecommendations.length < 3) {
@@ -111,6 +114,8 @@ export async function POST(req: Request) {
                         suitableFor: 'visual',
                         link: `https://www.youtube.com/watch?v=${video.id.videoId}`,
                         type: 'video',
+                        subject: subject,
+                        topicSent: topics
                     });
                 }
 
@@ -154,7 +159,9 @@ export async function POST(req: Request) {
             "link": "https://actual-link.com",
             "type": "video | book | article | tool",
             "description": "Brief summary of what the resource covers",
-            "suitableFor": "visual | auditory | kinesthetic"
+            "suitableFor": "visual | auditory | kinesthetic",
+            "subject": ${subject},
+            "topicSent": ${topics}
           },
           ...
         ]
@@ -195,9 +202,16 @@ export async function POST(req: Request) {
 
         }
         if (validRecommendations.length > 0) {
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (!user) {
+                throw new Error("User not authenticated in Firebase");
+            }
+            const userRecRef = adminDb.collection('users').doc(user.uid).collection('recommendations');
             await addDoc(collection(db, 'recommendations'), {
                 ...validRecommendations,
-                email: session.user.email,
+                uid: user.uid,
                 createdAt: serverTimestamp(),
             });
 

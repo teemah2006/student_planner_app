@@ -1,9 +1,8 @@
 "use client";
-import { db } from "../../../../utils/firebase";
+import { db, auth } from "../../../../utils/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useSession } from "next-auth/react"; // if you're using NextAuth
 import { useState } from "react";
-
 
 
 
@@ -28,42 +27,42 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   //     return
   // }
   const [loading, setLoading] = useState(false);
-  const { data: session } = useSession();
   const [show, setShow] = useState(true);
   const savePlanToFirestore = async (plan: StudyPlan) => {
     setLoading(true);
 
 
 
-    if (!session?.user?.email) {
-      alert("You must be logged in to save your plan.");
-      return;
-    }
+    const user = auth.currentUser;
+  if (!user) {
+    alert("User not authenticated");
+    return;
+  }
 
-    const docRef = doc(db, 'studyPlans', session.user.email);
-    const docSnap = await getDoc(docRef);
+  const uid = user.uid;
+  const docRef = doc(db, "studyPlans", uid);
+  const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      alert('sorry, you can only save one study plan at a time!');
-      setLoading(false);
-      setShow(false);
-      return
-    }
+  if (docSnap.exists()) {
+    alert("Sorry, you can only save one study plan at a time!");
+    setLoading(false);
+    setShow(false);
+    return;
+  }
 
-    try {
-      await setDoc(doc(db, "studyPlans", session.user.email), {
-        createdAt: new Date(),
-        plan: plan.dailyPlan,
-      });
-      alert("Study plan saved successfully! 📚");
-      setShow(false);
-    } catch (error) {
-      console.error("Error saving study plan:", error);
-      alert("Failed to save study plan. Please try again");
-    } finally {
-      setLoading(false);
-
-    }
+  try {
+    await setDoc(docRef, {
+      createdAt: new Date(),
+      plan: plan.dailyPlan,
+    });
+    alert("Study plan saved successfully!");
+    setShow(false);
+  } catch (error) {
+    console.error("Error saving study plan:", error);
+    alert("Failed to save study plan. Please try again");
+  } finally {
+    setLoading(false);
+  }
   };
 
   return (
