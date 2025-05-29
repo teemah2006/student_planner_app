@@ -106,6 +106,7 @@ async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
 export async function POST(req: Request) {
     try {
         const { subject, topics, weakness, style, examDate } = await req.json();
+        console.log('style', style)
         const session = await getServerSession();
         const validRecommendations: string | any[] | DocumentData = []
 
@@ -117,7 +118,7 @@ export async function POST(req: Request) {
             if (!query) {
                 throw new Error('Query parameter is required');
             }
-
+            console.log("Extracted query:", query, typeof youtubeApiKey); // Debug log
             const videos = await fetchRecommendations(youtubeApiKey?.toString(), query);
 
             // const videos = await fetchRecommendations(youtubeApiKey?.toString(), query);
