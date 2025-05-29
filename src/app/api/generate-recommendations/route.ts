@@ -46,7 +46,7 @@ async function isLinkValid(url: string): Promise<boolean> {
     }
 }
 // const fetchRecommendations = async (apiKey: string | undefined, query: string) => {
-const fetchRecommendations = async (apiKey: any, query: any) => {
+const fetchRecommendations = async (apiKey: any, query: string) => {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
 
     try {
