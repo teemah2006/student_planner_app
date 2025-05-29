@@ -45,16 +45,21 @@ async function isLinkValid(url: string): Promise<boolean> {
         return false;
     }
 }
-// const fetchRecommendations = async (apiKey: string | undefined, query: string) => {
-const fetchRecommendations = async (apiKey: any, query: string) => {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
+const fetchRecommendations = async (apiKey: string | undefined, query: string | undefined) => {
+    console.log("apikey", apiKey)
+    if (!apiKey || !query) {
+        throw new Error('Missing required parameters: apiKey or query');
+    }
+
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${apiKey}`;
 
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data.items;  // This will contain the recommended videos
+        return data.items;
     } catch (error) {
         console.error('Error fetching YouTube data:', error);
+        throw error; // re-throw for logging upstream
     }
 };
 
