@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { db } from "../../../../utils/firebase";
-import { collection, addDoc, serverTimestamp, DocumentData } from 'firebase/firestore';
+import {  DocumentData} from 'firebase/firestore';
 import { getServerSession } from "next-auth";
-import { getAuth } from "firebase/auth";
 import { adminDb } from "../../../../utils/firebaseAdmin";
+import admin from "firebase-admin"; // ✅ Must import admin directly
 
 const youtubeApiKey = process.env.YOUTUBE_API_KEY;
 
@@ -105,8 +103,8 @@ async function fetchWithRetry(prompt: string, retries = 3, delay = 1000) {
 
 export async function POST(req: Request) {
     try {
-        const { subject, topics, weakness, style, examDate } = await req.json();
-        console.log('style', style)
+        const { subject, topics, weakness, style, examDate, auth, email } = await req.json();
+        console.log('style&user', style, auth, email)
         const session = await getServerSession();
         const validRecommendations: string | any[] | DocumentData = []
 
@@ -202,38 +200,126 @@ export async function POST(req: Request) {
 
 
 
+        // let data = await fetchWithRetry(prompt, 3, 1500);
+        // // Step 1: Clean the AI response
+        // if (data) {
+        //     if (data.startsWith("```") && data.endsWith("```")) {
+        //         data = data.slice(3, -3).trim();
+        //     }
+        //     if (data.startsWith("json")) {
+        //         data = data.replace(/^json\s*/, "");
+        //     }
+
+        //     // Step 2: Parse the cleaned JSON
+        //     const parsed = JSON.parse(data);
+        //     for (const rec of parsed) {
+        //         if (await isLinkValid(rec.link)) {
+        //             validRecommendations.push(rec)
+        //         }
+        //     }
+
+        // }
         let data = await fetchWithRetry(prompt, 3, 1500);
+
         // Step 1: Clean the AI response
         if (data) {
+            console.log("Raw JSON string before parsing:", data);
+
+            // Remove code block formatting
             if (data.startsWith("```") && data.endsWith("```")) {
                 data = data.slice(3, -3).trim();
             }
+
+            // Remove 'json' prefix if present
             if (data.startsWith("json")) {
                 data = data.replace(/^json\s*/, "");
             }
 
-            // Step 2: Parse the cleaned JSON
-            const parsed = JSON.parse(data);
-            for (const rec of parsed) {
-                if (await isLinkValid(rec.link)) {
-                    validRecommendations.push(rec)
+            // Extra cleaning to prevent malformed JSON issues
+            const cleaned = data
+                .replace(/,\s*}/g, '}')   // remove trailing commas in objects
+                .replace(/,\s*]/g, ']')   // remove trailing commas in arrays
+                .replace(/\\"/g, '"')     // unescape escaped quotes
+                .replace(/\\n/g, '')      // remove escaped newlines
+                .trim();
+
+            // Step 2: Parse the cleaned JSON safely
+            let parsed;
+            try {
+                 console.log("cleaned data", cleaned)
+                parsed = JSON.parse(cleaned);
+                for (const rec of parsed) {
+                    if (await isLinkValid(rec.link)) {
+                        validRecommendations.push(rec);
+                    }
                 }
+            } catch (error) {
+                console.error("❌ Failed to parse JSON:", error);
+                console.log("🚨 Problematic JSON snippet:", cleaned.slice(20860, 20920)); // adjust based on error pos
+                return NextResponse.json({ error: "Invalid JSON format from AI response" }, { status: 500 });
             }
-
         }
-        if (validRecommendations.length > 0) {
-            const auth = getAuth();
-            const user = auth.currentUser;
 
-            if (!user) {
-                throw new Error("User not authenticated in Firebase");
-            }
-            const userRecRef = adminDb.collection('users').doc(user.uid).collection('recommendations');
-            await addDoc(collection(db, 'recommendations'), {
-                ...validRecommendations,
-                uid: user.uid,
-                createdAt: serverTimestamp(),
-            });
+
+
+        if (validRecommendations.length > 0) {
+
+
+
+            // const userRecRef = adminDb.collection('users').doc(user.uid).collection('recommendations');
+            // await addDoc(collection(db, 'recommendations'), {
+            //     ...validRecommendations,
+            //     uid: user.uid,
+            //     createdAt: serverTimestamp(),
+            // });
+            const userDocRef: any = adminDb.collection("users").doc(auth).collection("recommendations").doc(); // Single document per user
+
+            // const existingDoc = await getDoc(userDocRef);
+
+            // let newRecommendations: any = {};
+            // if (existingDoc.exists()) {
+                await userDocRef.set({
+                    ...validRecommendations,
+                    uid: auth,
+                    email: email,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                }
+                )
+                // const existingData:any = existingDoc.data();
+
+                // // Extract existing recommendations (numeric keys only)
+                // const existingRecs = Object.keys(existingData)
+                //     .filter((key) => !isNaN(Number(key)))
+                //     .map((key) => existingData[key]);
+
+                // const updatedRecs = [...existingRecs, validRecommendations];
+
+                // // Rebuild document: keep other fields (like email, uid) and rebuild recs
+                // newRecommendations = Object.entries(existingData)
+                //     .filter(([key]) => isNaN(Number(key)))
+                //     .reduce((acc: any, [key, value]) => {
+                //         acc[key] = value;
+                //         return acc;
+                //     }, {});
+
+                // updatedRecs.forEach((rec, index) => {
+                //     newRecommendations[index] = rec;
+                // });
+
+            // } else {
+            //     // If document doesn't exist, create it from scratch
+            //     newRecommendations = {
+            //         uid: auth,
+            //         email: email,
+            //         createdAt: serverTimestamp(),
+            //         ...validRecommendations,
+            //     };
+                // Save the new/updated document
+            //     await setDoc(userDocRef, newRecommendations, { merge: false });
+            // }
+
+
+
 
             console.log('Fetched recommendations:', validRecommendations);
             return NextResponse.json({ success: true }, { status: 200 });
@@ -246,7 +332,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Something went wrong, try checking your connection.' }, { status: 500 });
     }
 }
-
-
-
 

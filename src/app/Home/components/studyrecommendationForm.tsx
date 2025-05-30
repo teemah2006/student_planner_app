@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { useState } from 'react';
+import { auth } from '../../../../utils/firebase';
 
 export default function RecommendationForm({ onSuccess }: { onSuccess: () => void }) {
   const [formData, setFormData] = useState({
@@ -8,22 +10,34 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
     style: '',
     topics: '',
     examDate: '',
+    auth: '',
+    email: '',
   });
   const [loading, setLoading] = useState(false);
+  const user: any = auth.currentUser;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLFormElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({ ...prev,
+       [name]: value,  auth:user.uid, email:user.email}));
     console.log(`form data`, formData)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+     const user: any = auth.currentUser;
+  if (!user) {
+    alert("User not authenticated");
+    return;
+  }
 
+  console.log("client side", user)
+  // const uid: any = user.uid;
     const res = await fetch('/api/generate-recommendations', {
       method: 'POST',
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData, user.uid ),
     });
 
     if (res.ok) {

@@ -15,12 +15,12 @@ type Recommendation = {
 
 
 
-export default function RecommendationCard({ recommendation, deleteReco }: { recommendation: Recommendation, deleteReco?: ((id: string) => void) }) {
+export default function RecommendationCard({ recommendation, deleteReco }: { recommendation: Recommendation, deleteReco?: ((id: string,link: string) => void) }) {
 
 
   const handleDelete = () => {
     if (deleteReco) {
-      deleteReco( recommendation.docId)
+      deleteReco(recommendation.link, recommendation.docId)
     } else {
       return
     }

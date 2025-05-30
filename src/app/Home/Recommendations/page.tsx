@@ -47,6 +47,7 @@ export default function RecommendationsPage() {
 
   const fetchRecommendations = async (token: string) => {
   setLoadingg(true);
+  
   try {
     const res = await fetch("/api/getRecommendations", {
       headers: {
@@ -106,7 +107,7 @@ export default function RecommendationsPage() {
 
 
 
-  const deleteRecommendation = async (id: string) => {
+  const deleteRecommendation = async (link: string, id: string) => {
   const confirmed = confirm("Are you sure you want to delete this?");
   if (!confirmed) return;
 
@@ -121,7 +122,7 @@ export default function RecommendationsPage() {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recommendationId: id }),
+      body: JSON.stringify({ link:link, recommendationId: id }),
     });
 
     const data = await res.json();
