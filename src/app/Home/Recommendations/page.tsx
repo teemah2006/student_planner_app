@@ -200,7 +200,7 @@ export default function RecommendationsPage() {
                   ? ' text-blue-800 border-b-2 '
                   : '  hover:text-blue-800 '}`}>All</button>
               {topics?.map((topic, index) => (
-                <button className={`cursor-pointer p-2   font-semibold capitalize${activeTopic === topic
+                <button className={`cursor-pointer p-2  overflow-hidden font-semibold capitalize${activeTopic === topic
                   ? '  text-blue-800 border-b-2'
                   : '  hover:text-blue-800 '}`} key={index} onClick={() => {
                     setActiveTopic(topic);
