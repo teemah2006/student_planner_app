@@ -53,6 +53,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   try {
     await setDoc(docRef, {
       createdAt: new Date(),
+      email: user.email,
       plan: plan.dailyPlan,
     });
     alert("Study plan saved successfully!");

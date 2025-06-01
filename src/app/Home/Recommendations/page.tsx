@@ -34,9 +34,9 @@ export default function RecommendationsPage() {
     if (recFromDb) {
       for (const rec of recFromDb) {
         if (rec.topicSent) {
-          if (!topics.includes(rec.topicSent)) {
-            console.log(rec.topicSent)
-            topics.push(rec.topicSent)
+          if (!topics.includes(rec.topicSent.trim())) {
+            console.log(rec.topicSent.toLowerCase().trim())
+            topics.push(rec.topicSent.trim())
           }
         }
 
@@ -200,11 +200,11 @@ export default function RecommendationsPage() {
                   ? ' text-blue-800 border-b-2 '
                   : '  hover:text-blue-800 '}`}>All</button>
               {topics?.map((topic, index) => (
-                <button className={`cursor-pointer p-2  overflow-hidden font-semibold capitalize${activeTopic === topic
+                <button className={`cursor-pointer p-2 font-semibold capitalize${activeTopic === topic
                   ? '  text-blue-800 border-b-2'
                   : '  hover:text-blue-800 '}`} key={index} onClick={() => {
                     setActiveTopic(topic);
-                    const filteredRecommendations = recFromDb?.filter((rec) => rec.topicSent === topic)
+                    const filteredRecommendations = recFromDb?.filter((rec) => rec.topicSent?.trim() === topic)
                     setRecommendations(filteredRecommendations ? filteredRecommendations : recommendations)
                   }}>{topic}</button>
               ))}
