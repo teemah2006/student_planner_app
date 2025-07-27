@@ -2,7 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { auth } from '../../../../utils/firebase';
-
+import toast from 'react-hot-toast';
 export default function RecommendationForm({ onSuccess }: { onSuccess: () => void }) {
   const [formData, setFormData] = useState({
     subject: '',
@@ -29,7 +29,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
     setLoading(true);
      const user: any = auth.currentUser;
   if (!user) {
-    alert("User not authenticated");
+    toast.error('User not authenticated');
     return;
   }
 
@@ -41,9 +41,10 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
     });
 
     if (res.ok) {
+       toast.success('Recommendations generated successfully!');
       onSuccess(); // notify parent to refresh and close form
     } else {
-      alert('Something went wrong');
+      toast.error('Network error occurred.');
     }
 
     setLoading(false);
@@ -58,15 +59,16 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
             name={field}
             value={formData[field as keyof typeof formData]}
             onChange={handleChange}
-            className="border rounded w-full p-2"
+            className="border rounded w-full p-2 disabled:border-gray-500  disabled:cursor-not-allowed"
             required
+            disabled={loading}
           />
         </div>
       ))}
       <div>
         <label className="block capitalize">Weakness(es)</label>
-        <textarea name="weakness" id="" value={formData.weakness} onChange={handleChange} 
-        placeholder='what area are you struggling with? e.g naming of organic compounds' className="border rounded w-full p-2" required>
+        <textarea name="weakness" id="" value={formData.weakness} onChange={handleChange} disabled={loading}
+        placeholder='what area are you struggling with? e.g naming of organic compounds' className="border rounded w-full p-2 disabled:border-gray-500  disabled:cursor-not-allowed" required>
 
         </textarea>
       </div>
@@ -77,13 +79,14 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
             name='examDate'
             value={formData.examDate}
             onChange={handleChange}
-            className="border rounded w-full p-2"
+            className="border rounded w-full p-2 disabled:border-gray-500  disabled:cursor-not-allowed"
+            disabled={loading}
           />
       </div>
       <div>
         <label className="block capitalize">Learning style</label>
-        <select name="style" id="" onChange={handleChange} value={formData.style} className="border rounded w-full p-2"
-          required>
+        <select name="style" id="" onChange={handleChange} value={formData.style} className="border rounded w-full p-2 disabled:border-gray-500  disabled:cursor-not-allowed"
+          required disabled={loading}>
           <option value="">Select learning style</option>
           <option value="visual">Visual</option>
           <option value="auditory">Auditory</option>
@@ -93,7 +96,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white px-4 py-2 font-semibold rounded hover:bg-blue-700 cursor-pointer"
+        className="bg-blue-600 text-white px-4 py-2 font-semibold rounded hover:bg-blue-700 cursor-pointer disabled:border-gray-500  disabled:cursor-wait"
       >
         {loading ? 'Generating...' : 'Generate Recommendation'}
       </button>

@@ -1,9 +1,8 @@
 "use client";
 import { db, auth } from "../../../../utils/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { useSession } from "next-auth/react"; // if you're using NextAuth
 import { useState } from "react";
-
+import toast from 'react-hot-toast';
 
 
 interface StudyPlan {
@@ -44,7 +43,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    alert("Sorry, you can only save one study plan at a time!");
+    toast.error("Sorry, you can only save one study plan at a time!");
     setLoading(false);
     setShow(false);
     return;
@@ -56,11 +55,11 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
       email: user.email,
       plan: plan.dailyPlan,
     });
-    alert("Study plan saved successfully!");
+    toast.success("Study plan saved successfully!");
     setShow(false);
   } catch (error) {
     console.error("Error saving study plan:", error);
-    alert("Failed to save study plan. Please try again");
+    toast.error("Failed to save study plan. Please try again");
   } finally {
     setLoading(false);
   }

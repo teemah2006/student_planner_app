@@ -7,7 +7,9 @@ import { db, auth } from '../../../../utils/firebase'; // make sure this file is
 import EditPlanForm from './editplan';
 import Link from 'next/link';
 import { onAuthStateChanged } from "firebase/auth";
-
+import toast from 'react-hot-toast';
+import Image from 'next/image';
+import { Images } from '@/app/Media/Image';
 export type SessionType = {
   subject: string;
   topic: string;
@@ -52,9 +54,9 @@ export default function StudyPlanViewer() {
 
     setPlan(editedPlan);
     setIsEditing(false);
-    alert('Changes saved sucessfully!')
+    toast.success('Changes saved sucessfully!')
     } catch{
-      alert('Something went wrong please try again.')
+      toast.error('Something went wrong please try again.')
     }
 
     
@@ -75,11 +77,11 @@ export default function StudyPlanViewer() {
       await deletePlan(uid? uid : '')
       setPlan(null);
       setIsEditing(false);
-      alert('Study plan deleted!')
+      toast.success('Study plan deleted!')
       setDeleting(false);
     } catch (error) {
       console.log('error deleting plan', error)
-      alert('something went wrong while deleting.')
+      toast.error('something went wrong while deleting.')
       setDeleting(false);
     }
   }
@@ -88,7 +90,7 @@ export default function StudyPlanViewer() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        alert("User not authenticated.");
+        toast.error("User not authenticated.");
         setLoading(false);
         return;
       }
@@ -107,7 +109,7 @@ export default function StudyPlanViewer() {
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        alert("Oops! An error occurred, try checking your connection.");
+        toast.error("Oops! An error occurred, try checking your connection.");
       } finally {
         setLoading(false);
       }
@@ -120,7 +122,10 @@ export default function StudyPlanViewer() {
   <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
   <p className="mt-2 text-gray-500">Loading your study plan...</p>
 </div>;
-  if (!plan) return <p className='text-gray-500'>No study plan found. <Link href="/Home/Schedule_generator" className="text-blue-500 underline">Tap here to create</Link></p>;
+  if (!plan) 
+  return <div className='flex flex-col items-center justify-center  h-screen'> <h3 className='text-gray-700 text-xl'>No Study plan found</h3> <Image src={Images.noData} alt='no data' />
+  <Link href="/Home/Schedule_generator" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-2 rounded-lg">Tap here to create</Link>
+  </div>
 
   const Plan = () => {
     return (
@@ -163,13 +168,16 @@ export default function StudyPlanViewer() {
       <div className=''>
         <h2 className="text-xl lg:text-2xl font-bold text-black">Your 7-Day Study Plan</h2>
         <div className='flex float-right justify-between space-x-2 my-4 md:space-x-4'>
-          <button onClick={() => setIsEditing(!isEditing)} className='bg-blue-600 font-semibold md:text-md text-sm  cursor-pointer hover:bg-blue-700 rounded p-2'>
+          <button onClick={() => setIsEditing(!isEditing)} 
+          className='bg-blue-600 font-semibold md:text-md text-sm disabled:cursor-not-allowed  cursor-pointer hover:bg-blue-700 rounded p-2'
+          disabled={deleting}>
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
           
           <button
             onClick={handleDelete}
-            className="bg-blue-100 text-blue-800 md:px-4 md:py-2 p-2 md:text-md text-sm font-semibold rounded  hover:bg-blue-200  cursor-pointer"
+            disabled={deleting}
+            className="bg-blue-100 disabled:cursor-not-allowed text-blue-800 md:px-4 md:py-2 p-2 md:text-md text-sm font-semibold rounded  hover:bg-blue-200  cursor-pointer"
           >
            {deleting? 'Deleting...' : 'Delete Plan'} 
           </button>

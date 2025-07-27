@@ -38,7 +38,7 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   
   try {
-    const { subjects, hoursPerDay, examDate, preferredTime } = await req.json();
+    const { subjects, hoursPerDay, examDate, preferredTime, startTime } = await req.json();
     // console.log("Received in API:",  subjects );
 
     
@@ -51,6 +51,7 @@ The user wants to generate a personalized 7-day study plan. Here are their detai
 
 Study hours per day: ${hoursPerDay}
 Preferred time of day: ${preferredTime}
+${startTime? `Start time: ${startTime}`:""}
 ${examDate ? `Exam date: ${examDate}` : ""}
 
 Subjects and Topics:
@@ -63,6 +64,7 @@ Instructions:
 - Create a 7-day study schedule.
 - Use all subjects and topics provided.
 - Spread the study hours across the preferred time of day.
+- Always include modifiers in lowercase like: 10:00am - 11:00am
 - Mention subject, topics, and time duration for each session.
 - include break sessions
 - Try to prioritize subjects/topics that may have upcoming exams (if exam date is provided).

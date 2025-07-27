@@ -9,7 +9,7 @@ import { getDoc, doc, } from "firebase/firestore";
 import { auth, db } from "../../../../utils/firebase";
 import { SessionType } from "./studyplanfromdb";
 import { onAuthStateChanged } from "firebase/auth";
-
+import toast from 'react-hot-toast';
 
 export default function DashboardGrid2() {
     const [recommendations, setRecommendations] = useState([]);
@@ -27,6 +27,7 @@ export default function DashboardGrid2() {
             hours = '00';
         }
 
+    
         if (modifier.toUpperCase() === 'PM') {
             hours = String(parseInt(hours, 10) + 12);
         }
