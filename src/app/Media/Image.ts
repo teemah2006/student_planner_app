@@ -1,6 +1,6 @@
-import student from "./pexels-diva-plavalaguna-6149793.jpg"
 import noData from "./No data-cuate.svg"
+import studying from "./Studying-cuate.png"
 export const Images = {
-    student,
-    noData
+    noData,
+    studying
 }
