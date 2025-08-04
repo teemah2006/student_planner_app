@@ -12,6 +12,7 @@ interface StudyPlan {
     {
       subject: string,
       topic: string,
+      level: string,
       activity: string,
       timeInterval: string;
     }[]
@@ -34,7 +35,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
 
     const user = auth.currentUser;
   if (!user) {
-    alert("User not authenticated");
+    toast.error("User not authenticated");
     return;
   }
 

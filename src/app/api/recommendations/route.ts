@@ -11,7 +11,7 @@ export async function DELETE(req: NextRequest) {
 
     const body = await req.json();
     const { link: linkToDelete, recommendationId } = body;
-    console.log('recoid', recommendationId, linkToDelete)
+    // console.log('recoid', recommendationId, linkToDelete)
 
     if (!recommendationId) {
         return NextResponse.json({ error: "No recommendation ID provided" }, { status: 400 });

@@ -7,7 +7,7 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { FaBookAtlas } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
-
+import { BsClockHistory } from "react-icons/bs";
 
 
 export default function Navbar() {
@@ -19,6 +19,7 @@ export default function Navbar() {
             <Link href="/Home" className={pathName == "/Home" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaSwatchbook />Dashboard</Link>
             <Link href="/Home/Schedule_generator" className={pathName == "/Home/Schedule_generator" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaArrowsRotate />Study planner</Link>
             <Link href="/Home/Recommendations" className={pathName == "/Home/Recommendations" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaBookAtlas />Study resources</Link>
+            <Link href="/Home/History" className={pathName == "/Home/History" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><BsClockHistory />History</Link>
             <button  onClick={() => signOut({ callbackUrl: "/authentication" })} className={LinkClasses + ' text-gray-100 flex-row'}><FaArrowRightFromBracket />Log Out</button>
 
         </>
@@ -42,13 +43,14 @@ export default function Navbar() {
 
 export function MobileNav() {
     const pathName = usePathname();
-
-    const LinkClasses = " block border-transparent  text-sm lg:text-lg md:text-md text-blue-700 md:text-gray-100 border hover:border-blue-100 rounded flex gap-2 md:flex-row flex-col justify-center items-center p-[2px] md:p-2 transition "
+    
+    const LinkClasses = " block  text-sm lg:text-lg md:text-md text-blue-700 md:text-gray-100  rounded flex gap-2 md:flex-row flex-col justify-center items-center p-[2px] md:p-2 transition "
     const Links = (
         <>
-            <Link href="/Home" className={pathName == "/Home" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaSwatchbook />Dashboard</Link>
-            <Link href="/Home/Schedule_generator" className={pathName == "/Home/Schedule_generator" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaArrowsRotate />Study planner</Link>
-            <Link href="/Home/Recommendations" className={pathName == "/Home/Recommendations" ? LinkClasses + ' bg-blue-100 text-blue-700' : LinkClasses}><FaBookAtlas />Study resources</Link>
+            <Link href="/Home" className={pathName == "/Home" ? LinkClasses + 'border-b-4 border-blue-700' : LinkClasses}><FaSwatchbook />Dashboard</Link>
+            <Link href="/Home/Schedule_generator" className={pathName == "/Home/Schedule_generator" ? LinkClasses + 'border-b-4 border-blue-700' : LinkClasses}><FaArrowsRotate />planner</Link>
+            <Link href="/Home/Recommendations" className={pathName == "/Home/Recommendations" ? LinkClasses + 'border-b-4 border-blue-700' : LinkClasses}><FaBookAtlas />resources</Link>
+            <Link href="/Home/History" className={pathName == "/Home/History" ? LinkClasses + 'border-b-4 border-blue-700' : LinkClasses}><BsClockHistory />History</Link>
         </>
     );
     return (

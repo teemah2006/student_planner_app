@@ -56,9 +56,18 @@ ${examDate ? `Exam date: ${examDate}` : ""}
 
 Subjects and Topics:
 ${subjects.map(
-  (subject: { subject: string; topics: string[]; }, i: number) =>
-    `${i + 1}. ${subject.subject}\n   Topics: ${subject.topics.join(", ")}`
-).join("\n")}
+  (subject: { subject: string; topics: { topic: string, level: string }[]; }, i: number) => {
+     const weak = subject.topics.filter(t => t.level === "weak").map(t => t.topic);
+    const moderate = subject.topics.filter(t => t.level === "moderate").map(t => t.topic);
+    const strong = subject.topics.filter(t => t.level === "strong").map(t => t.topic);
+
+    return `${i + 1}. ${subject.subject}
+   Weak Topics: ${weak.length > 0 ? weak.join(", ") : "None"}
+   Moderate Topics: ${moderate.length > 0 ? moderate.join(", ") : "None"}
+   Strong Topics: ${strong.length > 0 ? strong.join(", ") : "None"}`;
+  }).join("\n")}
+
+Prioritize weak topics first when generating study plans, followed by moderate, then strong topics.
 
 Instructions:
 - Create a 7-day study schedule.
@@ -78,7 +87,8 @@ Instructions:
         {
           "subject": "Math",
           "topic": "Algebra",
-          "activity": "solve questions"
+          "level": "moderate",
+          "activity": "solve questions",
           "timeInterval": 10:00am - 11:00am,
         },
         ...

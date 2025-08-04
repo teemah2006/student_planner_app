@@ -7,7 +7,7 @@ import { setDoc, collection, doc, query, where, getDocs, getDoc } from 'firebase
 import { auth, db } from '../../../../utils/firebase';
 import { useSession } from 'next-auth/react';
 import { onAuthStateChanged } from 'firebase/auth';
-
+import toast from 'react-hot-toast';
 
 type Recommendation = {
   // [x: string]: any;
@@ -23,12 +23,14 @@ type Recommendation = {
 
 export default function RecommendationsPage() {
   const [showForm, setShowForm] = useState(false);
-  const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loadingg, setLoadingg] = useState(false);
   const topics: any[] = [];
   const [activeTopic, setActiveTopic] = useState<string | null>('All');
   const [recFromDb, setRecFromDb] = useState<Recommendation[] | null>(null);
-  // const { user, loading } = useAuth();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
 
   const getTopics = () => {
     if (recFromDb) {
@@ -46,97 +48,98 @@ export default function RecommendationsPage() {
   }
 
   const fetchRecommendations = async (token: string) => {
-  setLoadingg(true);
-  
-  try {
-    const res = await fetch("/api/getRecommendations", {
-      headers: {
-        Authorization: `Bearer ${token}`
+    setLoadingg(true);
+
+    try {
+      const res = await fetch("/api/getRecommendations", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+
+      if (res.status !== 200 || data?.error) {
+        console.error(data?.error || 'Error fetching recommendations');
+        alert("We couldn't fetch recommendations. Please try again later.");
+        setLoadingg(false);
+        return;
       }
-    });
-    const data = await res.json();
 
-    if (res.status !== 200 || data?.error) {
-      console.error(data?.error || 'Error fetching recommendations');
-      alert("We couldn't fetch recommendations. Please try again later.");
+      // console.log('Fetched recommendations from DB:', data);
+
+      // Flatten out the recommendations and attach the document ID to each
+      const allRecsWithDocId = data.flatMap((item: { id: string;[key: string]: any }) =>
+        Object.keys(item)
+          .filter(key => !isNaN(Number(key)))
+          .map(key => ({
+            ...item[key],
+            docId: item.id // attach document ID to each recommendation
+          }))
+      );
+
+      setRecommendations(allRecsWithDocId);
+      setRecFromDb(allRecsWithDocId);
       setLoadingg(false);
-      return;
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred while fetching.");
+      setLoadingg(false);
     }
-
-    console.log('Fetched recommendations from DB:', data);
-
-    // Flatten out the recommendations and attach the document ID to each
-    const allRecsWithDocId = data.flatMap((item: { id: string; [key: string]: any }) =>
-      Object.keys(item)
-        .filter(key => !isNaN(Number(key)))
-        .map(key => ({
-          ...item[key],
-          docId: item.id // attach document ID to each recommendation
-        }))
-    );
-
-    setRecommendations(allRecsWithDocId);
-    setRecFromDb(allRecsWithDocId);
-    setLoadingg(false);
-  } catch (err) {
-    console.error("Fetch error:", err);
-    alert("An error occurred while fetching.");
-    setLoadingg(false);
-  }
-};
+  };
 
   useEffect(() => {
-     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-           if (!user) {
-             alert("User not authenticated.");
-             setLoadingg(false);
-             return;
-           }
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        toast.error("User not authenticated.");
+        setLoadingg(false);
+        return;
+      }
       try {
-      const token = await user.getIdToken();
-      await fetchRecommendations(token); // ✅ Pass token here
-    } catch (error) {
-      console.error("Error fetching recommendations:", error);
-    } finally {
-      setLoadingg(false);
-    }
-    
-  })
-  return () => unsubscribe();
+        const token = await user.getIdToken();
+        await fetchRecommendations(token); // ✅ Pass token here
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      } finally {
+        setLoadingg(false);
+      }
+
+    })
+    return () => unsubscribe();
   }, []);
 
 
 
   const deleteRecommendation = async (link: string, id: string) => {
-  const confirmed = confirm("Are you sure you want to delete this?");
-  if (!confirmed) return;
+    const confirmed = confirm("Are you sure you want to delete this?");
+    if (!confirmed) return;
 
-  try {
-    const user = auth.currentUser;
-    if (!user) return;
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
 
-    const token = await user.getIdToken();
-    const res = await fetch("/api/recommendations", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ link:link, recommendationId: id }),
-    });
+      const token = await user.getIdToken();
+      const res = await fetch("/api/recommendations", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ link: link, recommendationId: id }),
+      });
 
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data?.error || "Failed to delete recommendation.");
-    } else {
-      alert("Deleted successfully!");
-      await fetchRecommendations(token); // Refresh list
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data?.error || "Failed to delete recommendation.");
+      } else {
+        toast.success("Deleted successfully!");
+        await fetchRecommendations(token);
+        setActiveTopic('All') // Refresh list
+      }
+    } catch (err) {
+      console.error("Error deleting:", err);
+      toast.error("Error deleting. Please try again.");
     }
-  } catch (err) {
-    console.error("Error deleting:", err);
-    alert("Error deleting. Please try again.");
-  }
-};
+  };
 
 
 
@@ -168,9 +171,9 @@ export default function RecommendationsPage() {
             onSuccess={async () => {
               const user = auth.currentUser;
               if (user) {
-          const token = await user.getIdToken();
-          await fetchRecommendations(token);
-        }
+                const token = await user.getIdToken();
+                await fetchRecommendations(token);
+              }
               getTopics() // refresh after successful creation
               setShowForm(false);
             }}
@@ -190,11 +193,11 @@ export default function RecommendationsPage() {
               <button
                 onClick={async () => {
                   setActiveTopic('All');
-                 const user = auth.currentUser;
-              if (user) {
-          const token = await user.getIdToken();
-          await fetchRecommendations(token);
-        }
+                  const user = auth.currentUser;
+                  if (user) {
+                    const token = await user.getIdToken();
+                    await fetchRecommendations(token);
+                  }
                 }}
                 className={`cursor-pointer p-2 font-semibold   ${activeTopic === 'All'
                   ? ' text-blue-800 border-b-2 '
@@ -209,14 +212,79 @@ export default function RecommendationsPage() {
                   }}>{topic}</button>
               ))}
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
+            {recommendations?.length > 0 && (
+              <div className="flex w-[100%] text-left items-center space-x-4 mb-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    className='checkbox checkbox-info checkbox-sm'
+                    onChange={() => {
+                      if (selectAll) {
+                        setSelectedIds([]);
+                      } else {
+                        const allIds = recommendations.map((rec) => rec.link);
+                        setSelectedIds(allIds);
+                      }
+                      setSelectAll(!selectAll);
+                    }}
+                  />
+                  <span className='text-gray-700 cursor-pointer'>{selectAll? 'Deselect All': 'Select All'}</span>
+                </label>
 
+                <button
+                  className="cursor-pointer text-gray-700 px-4 py-1 rounded hover:text-red-700 transition disabled:hidden "
+                  disabled={selectedIds.length === 0}
+                  onClick={async () => {
+                    const confirmed = confirm(`Delete ${selectedIds.length} selected items?`);
+                    if (!confirmed) return;
+
+                    const user = auth.currentUser;
+                    if (!user) return;
+                    const token = await user.getIdToken();
+
+                    for (const id of selectedIds) {
+                      const rec = recommendations.find((r) => r.link === id);
+                      if (rec) {
+                        await fetch("/api/recommendations", {
+                          method: "DELETE",
+                          headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ link: rec.link, recommendationId: rec.docId }),
+                        });
+                      }
+                    }
+
+                    toast.success("Deleted selected items");
+                    setSelectedIds([]);
+                    setSelectAll(false);
+                    await fetchRecommendations(token);
+                  }}
+                >
+                  Delete Selected
+                </button>
+              </div>
+            )}
+
+            <div className="grid gap-4 md:grid-cols-2">
 
               {recommendations?.length === 0 ? (
                 <p className="text-gray-600">No recommendations yet. Start by creating one.</p>
               ) : (
                 recommendations?.map((rec: Recommendation, index) => (
-                  <RecommendationCard key={index} recommendation={rec} deleteReco={deleteRecommendation} />
+                  <RecommendationCard
+    key={index}
+    recommendation={rec}
+    deleteReco={deleteRecommendation}
+    isSelected={selectedIds.includes(rec.link)}
+    toggleSelect={(id: string) => {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    }}
+  />
                 ))
               )}
             </div>

@@ -15,7 +15,15 @@ type Recommendation = {
 
 
 
-export default function RecommendationCard({ recommendation, deleteReco }: { recommendation: Recommendation, deleteReco?: ((id: string,link: string) => void) }) {
+export default function RecommendationCard({recommendation,
+  deleteReco,
+  isSelected,
+  toggleSelect,
+}: {
+  recommendation: Recommendation;
+  deleteReco?: (link: string, id: string) => void;
+  isSelected?: boolean;
+  toggleSelect?: (id: string) => void;}) {
 
 
   const handleDelete = () => {
@@ -28,6 +36,14 @@ export default function RecommendationCard({ recommendation, deleteReco }: { rec
   }
   return (
     <div className="border p-4 overflow-auto rounded-md shadow hover:shadow-md transition bg-white space-2">
+      {toggleSelect && (
+        <input
+          type="checkbox"
+          className="checkbox checkbox-info checkbox-sm"
+          checked={isSelected}
+          onChange={() => toggleSelect(recommendation.link)}
+        />
+      )}
       <h3 className="text-lg font-semibold text-blue-800">{recommendation.title}</h3>
       <p className="text-sm text-gray-600">{recommendation.description}</p>
       {recommendation.type === "video" ?
