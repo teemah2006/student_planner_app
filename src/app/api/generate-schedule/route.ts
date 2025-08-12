@@ -95,7 +95,7 @@ Instructions:
 - Include break sessions with relaxing or energizing suggestions when necessary based on the user's age.
 - Make the plan encouraging and motivating for the user.
 
-- Example response in *valid JSON* :
+- Example response in *valid JSON*:
 
 {
   "dailyPlan": [
@@ -122,6 +122,13 @@ Instructions:
           "level": ,
           "activity": "Take a 15-minute walk and drink water",
           "timeInterval": "11:00am - 11:15am"
+        },
+        {
+          "subject": "Physics",
+          "topic": "Optics",
+          "level": "weak",
+          "activity": "Practice 30 optics questions from  WAEC 2022 past questions",
+          "timeInterval": "11:15am - 12:00am"
         }
       ]
     },
