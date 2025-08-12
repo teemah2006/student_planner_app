@@ -5,6 +5,9 @@ import StudyPlan from "../components/studyplan";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import toast from 'react-hot-toast';
+import { examOptions } from "@/library/exams";
+import { useUserStore } from "@/app/api/stores/useUserStore";
+import { useSession } from "next-auth/react";
 interface StudyPlan {
   dailyPlan: {
     day: string,
@@ -22,6 +25,9 @@ interface StudyPlan {
 
 
 export default function StudyPlanner() {
+  const user = useUserStore((state) => state.user);
+  const { data: session } = useSession();
+  
   const [subjects, setSubjects] = useState<
   {
     subject: string;
@@ -39,10 +45,14 @@ export default function StudyPlanner() {
   const [schedule, setSchedule] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [preferredTime, setPreferredTime] = useState("");
+  const [selectedExam, setSelectedExam] = useState("");
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const levelSpanClass = "space-x-2 lg:space-x-4 mr-4";
   const levelLabelClass = "text-sm md:text-md lg:text-lg"
 
+  if (!session) {
+        return <p>You must be signed in to view this page.</p>;
+      };
   const addSubject = () => {
     if (newSubject) {
 
@@ -100,11 +110,12 @@ export default function StudyPlanner() {
   const clearInputs = () => {
     setNewSubject("");
     setNewTopics([{ topic: "", level: "weak" }]);
-    setSubjects([{ subject: "", topics: [{ topic: "", level: "weak" }] }]);
+    setSubjects([]);
     setHours(2);
     setExamDate("");
     setPreferredTime("");
     setStartTime("");
+    setSelectedExam("");
   }
 
   const generateSchedule = async () => {
@@ -120,8 +131,10 @@ export default function StudyPlanner() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            uid: session.user.uid,
             subjects: subjects,
             hoursPerDay: hours,
+            examType: selectedExam,
             examDate,
             preferredTime,
             startTime,
@@ -313,6 +326,19 @@ export default function StudyPlanner() {
             onChange={(e) => setStartTime(e.target.value)}
             className={`border p-2 w-full rounded disabled:text-gray-500 disabled:border-gray-500 disabled:cursor-not-allowed`}
           />
+        </div>
+        <div className="mt-4">
+          <label className="block font-semibold">Exam type</label>
+          <select name="examType" id="examType" className={`border p-2 w-full rounded disabled:text-gray-500 disabled:border-gray-500
+          disabled:cursor-not-allowed`}
+            disabled={loading}
+            onChange={(e) => setSelectedExam(e.target.value)} value={selectedExam} >
+            <option value="">--select exam type--</option>
+            {examOptions.map((exam, index)=>(
+              <option key={index} value={exam}>{exam}</option>
+            ))}
+            
+          </select>
         </div>
 
         <div className="mt-4">

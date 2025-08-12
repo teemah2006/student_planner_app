@@ -8,6 +8,7 @@ import { auth, db } from '../../../../utils/firebase';
 import { useSession } from 'next-auth/react';
 import { onAuthStateChanged } from 'firebase/auth';
 import toast from 'react-hot-toast';
+import  { useRouter } from 'next/navigation';
 
 type Recommendation = {
   // [x: string]: any;
@@ -30,7 +31,7 @@ export default function RecommendationsPage() {
   const [recFromDb, setRecFromDb] = useState<Recommendation[] | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-
+  const router = useRouter();
 
   const getTopics = () => {
     if (recFromDb) {
@@ -92,6 +93,7 @@ export default function RecommendationsPage() {
       if (!user) {
         toast.error("User not authenticated.");
         setLoadingg(false);
+        router.push('/authentication')
         return;
       }
       try {
@@ -105,7 +107,7 @@ export default function RecommendationsPage() {
 
     })
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
 
 

@@ -2,8 +2,9 @@
 
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-
+import { adminDb } from "../../../../utils/firebaseAdmin";
 const currentDate = new Date().toISOString().split("T")[0];
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY})
 
@@ -37,22 +38,32 @@ const openai = new OpenAI({
   
 export async function POST(req: Request) {
   
+  
   try {
-    const { subjects, hoursPerDay, examDate, preferredTime, startTime } = await req.json();
+    const { uid, subjects, hoursPerDay, examType, examDate, preferredTime, startTime } = await req.json();
     // console.log("Received in API:",  subjects );
-
+    const recRef = adminDb.collection("accounts").doc(uid);
+    const snapshot = await recRef.get();
+    const user = snapshot.data();
+    // console.log(user)
     
     const prompt = `
-      Today's date: ${currentDate}
-      
+Today's date: ${currentDate}
+
 You are a helpful AI study assistant.
 
-The user wants to generate a personalized 7-day study plan. Here are their details:
+The user wants a personalized 7-day study plan.
 
-Study hours per day: ${hoursPerDay}
-Preferred time of day: ${preferredTime}
-${startTime? `Start time: ${startTime}`:""}
-${examDate ? `Exam date: ${examDate}` : ""}
+User Profile:
+- Age: ${user?.age}
+- Country: ${user?.country}
+- Region: ${user?.region}
+- Education Level: ${user?.educationLevel}
+- Exam Type: ${examType ? examType : "Not provided"}
+- Study hours per day: ${hoursPerDay}
+- Preferred time of day: ${preferredTime}
+${startTime ? `- Start time: ${startTime}` : ""}
+${examDate ? `- Exam date: ${examDate}` : ""}
 
 Subjects and Topics:
 ${subjects.map(
@@ -61,23 +72,30 @@ ${subjects.map(
     const moderate = subject.topics.filter(t => t.level === "moderate").map(t => t.topic);
     const strong = subject.topics.filter(t => t.level === "strong").map(t => t.topic);
 
-    return `${i + 1}. ${subject.subject}
+   return `${i + 1}. ${subject.subject}
    Weak Topics: ${weak.length > 0 ? weak.join(", ") : "None"}
    Moderate Topics: ${moderate.length > 0 ? moderate.join(", ") : "None"}
    Strong Topics: ${strong.length > 0 ? strong.join(", ") : "None"}`;
   }).join("\n")}
 
-Prioritize weak topics first when generating study plans, followed by moderate, then strong topics.
+Personalization Rules:
+1. Tailor study activities to the exam type and education level.
+2. Prioritize weak topics first, then moderate, then strong.
+3. Suggest specific activities for each topic (e.g., "review past questions", "watch tutorial", "practice timed test").
+4. Adapt session lengths and break frequency for the user's age.
+5. Include culturally relevant resources or tips based on country and region.
+6. If exam date is provided, prioritize time-sensitive topics.
 
 Instructions:
-- Create a 7-day study schedule.
+- Create a 7-day study schedule in *valid JSON* format.
 - Use all subjects and topics provided.
-- Spread the study hours across the preferred time of day.
-- Always include modifiers in lowercase like: 10:00am - 11:00am
-- Mention subject, topics, and time duration for each session.
-- include break sessions
-- Try to prioritize subjects/topics that may have upcoming exams (if exam date is provided).
-- Return the response in *valid JSON* like this:
+- Spread study hours across the preferred time of day.
+- Always include lowercase modifiers in time: 10:00am - 11:00am
+- Mention subject, topics, level, activity, and timeInterval for each session.
+- Include break sessions with relaxing or energizing suggestions when necessary based on the user's age.
+- Make the plan encouraging and motivating for the user.
+
+- Example response in *valid JSON* :
 
 {
   "dailyPlan": [
@@ -87,19 +105,32 @@ Instructions:
         {
           "subject": "Math",
           "topic": "Algebra",
-          "level": "moderate",
-          "activity": "solve questions",
-          "timeInterval": 10:00am - 11:00am,
+          "level": "weak",
+          "activity": "Review WAEC past questions and solve 10 practice problems",
+          "timeInterval": "9:00am - 10:00am"
         },
-        ...
+        {
+          "subject": "English",
+          "topic": "Comprehension",
+          "level": "weak",
+          "activity": "Practice 3 comprehension passages from WAEC 2022",
+          "timeInterval": "10:15am - 11:00am"
+        },
+        {
+          "subject": "Break",
+          "topic": ,
+          "level": ,
+          "activity": "Take a 15-minute walk and drink water",
+          "timeInterval": "11:00am - 11:15am"
+        }
       ]
     },
     ...
   ]
 }
 
+`.trim();
 
-    `.trim();
 
    
 
@@ -115,9 +146,11 @@ Instructions:
         data = data.replace(/^json\s*/, ""); // Remove "json" and any spaces/newlines after it
       }
       return NextResponse.json(JSON.parse(data.trim()));
-    } else{return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });}
+    } else{
+      console.log(data)
+      return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 });}
   } catch (error) {
-    // alert(`Failed to generate schedule: ${error}`)
+    console.log(error)
     return NextResponse.json({ error: `Failed to generate schedule ${error}` }, { status: 500 });
   }
 }

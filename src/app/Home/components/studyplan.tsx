@@ -38,7 +38,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
     toast.error("User not authenticated");
     return;
   }
-
+   try {
   const uid = user.uid;
   const docRef = doc(db, "studyPlans", uid);
   const docSnap = await getDoc(docRef);
@@ -50,7 +50,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
     return;
   }
 
-  try {
+ 
     await setDoc(docRef, {
       createdAt: new Date(),
       email: user.email,
@@ -61,6 +61,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   } catch (error) {
     console.error("Error saving study plan:", error);
     toast.error("Failed to save study plan. Please try again");
+    
   } finally {
     setLoading(false);
   }
@@ -119,6 +120,7 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
             <button
               className="bg-blue-700 cursor-pointer px-4 p-2 font-semibold rounded text-white hover:bg-blue-800"
               onClick={() => savePlanToFirestore(plan)}
+              disabled={loading}
             >
               {loading ? "Saving..." : "Save"}
             </button>

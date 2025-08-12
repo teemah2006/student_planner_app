@@ -6,15 +6,15 @@ import Dashboardpg from "./Dashboard/page";
 export default function LoginHome() {
   const router = useRouter();
   const { data: session, status } = useSession();
-
+  console.log(session);
   useEffect(() => {
-    if (status !== "loading" && !session) {
+    if (status === "unauthenticated") {
       router.push("/authentication");
     }
-  }, [session, status, router]);
+  }, [status, router]);
 
-  if (!session) {
-    return <p>Redirecting...</p>;
+  if (status === "loading") {
+    return <p>Loading...</p>;
   }
 
 
