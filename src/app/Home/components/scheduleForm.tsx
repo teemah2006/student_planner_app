@@ -49,7 +49,7 @@ export default function StudyPlanner() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const levelSpanClass = "space-x-2 lg:space-x-4 mr-4";
   const levelLabelClass = "text-sm md:text-md lg:text-lg"
-
+  
   if (!session) {
         return <p>You must be signed in to view this page.</p>;
       };
@@ -83,6 +83,8 @@ export default function StudyPlanner() {
     }
     console.log(subjects)
   };
+
+  
 
   const editSubject = (i: number) => {
     const selectedSubject = subjects[i];
@@ -373,7 +375,7 @@ export default function StudyPlanner() {
       {/* Display AI Response */}
 
       {schedule &&
-        <StudyPlan plan={schedule} />
+        <StudyPlan plan={schedule} subjects={subjects} examType={selectedExam} />
       }
 
 

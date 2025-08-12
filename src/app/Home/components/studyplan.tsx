@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { db, auth } from "../../../../utils/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
-
+import { useUserStore } from "@/app/api/stores/useUserStore";
 
 interface StudyPlan {
   dailyPlan: {
@@ -20,7 +21,18 @@ interface StudyPlan {
 }
 
 
-export default function StudyPlan({ plan }: { plan: StudyPlan }) {
+
+
+export default function StudyPlan({ plan, subjects, examType }: {
+  plan: StudyPlan, subjects: {
+    subject: string;
+    topics: {
+      topic: string;
+      level: string;
+    }[];
+  }[],
+  examType: string
+}) {
   // const [show, setShow] = useState(true);
   // const cancel = () => {
   //     plan = null;
@@ -28,44 +40,92 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
   // }
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(true);
+  const [resources, setResources] = useState(false);
+  const [loadResource, setLoadResource] = useState(false);
+  const user: any = auth.currentUser;
+  const userProfile = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (loadResource) {
+      toast.loading('please wait while we create your resources')
+    }
+  }, [loadResource]);
+
   const savePlanToFirestore = async (plan: StudyPlan) => {
     setLoading(true);
 
 
 
-    const user = auth.currentUser;
-  if (!user) {
-    toast.error("User not authenticated");
-    return;
-  }
-   try {
-  const uid = user.uid;
-  const docRef = doc(db, "studyPlans", uid);
-  const docSnap = await getDoc(docRef);
+    if (!user) {
+      toast.error("User not authenticated");
+      return;
+    }
+    try {
+      const uid = user.uid;
+      const docRef = doc(db, "studyPlans", uid);
+      const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    toast.error("Sorry, you can only save one study plan at a time!");
-    setLoading(false);
-    setShow(false);
-    return;
-  }
+      if (docSnap.exists()) {
+        toast.error("Sorry, you can only save one study plan at a time!");
+        setLoading(false);
+        setShow(false);
+        return;
+      }
 
- 
-    await setDoc(docRef, {
-      createdAt: new Date(),
-      email: user.email,
-      plan: plan.dailyPlan,
-    });
-    toast.success("Study plan saved successfully!");
-    setShow(false);
-  } catch (error) {
-    console.error("Error saving study plan:", error);
-    toast.error("Failed to save study plan. Please try again");
-    
-  } finally {
-    setLoading(false);
-  }
+
+      await setDoc(docRef, {
+        createdAt: new Date(),
+        email: user.email,
+        plan: plan.dailyPlan,
+      });
+      toast.success("Study plan saved successfully!");
+      setShow(false);
+    } catch (error) {
+      console.error("Error saving study plan:", error);
+      toast.error("Failed to save study plan. Please try again");
+
+    } finally {
+      setLoading(false);
+    };
+    if (resources) {
+      setLoadResource(true)
+      
+      try {
+        for (const s of subjects) {
+          for (const t of s.topics) {
+            if (t.level === 'weak' || t.level === 'moderate') {
+              const formData = {
+                subject: s.subject,
+                weakness: `${userProfile?.educationLevel} ${userProfile?.grade} ${examType}`,
+                style: 'visual',
+                topics: t.topic,
+                auth: user.uid,
+                email: user.email,
+              }
+              const res = await fetch('/api/generate-recommendations', {
+                method: 'POST',
+                body: JSON.stringify(formData, user.uid),
+              });
+            } else{
+              continue
+            }
+
+          }
+        };
+        setLoadResource(false)
+        toast.success('Check your recommended resources in the resource tab')
+      } catch (error) {
+        console.log(error);
+        toast.error('Network error occurred.');
+      }
+
+      setResources(false);
+    }
   };
+
+  
+
+        
 
   return (
     show ? (
@@ -73,11 +133,6 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
 
       <div id="modal" className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 text-black w-[90%] max-h-[90%] overflow-auto p-4 relative">
-          {loading && (
-            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75 z-10">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
-            </div>
-          )}
 
           {/* Your modal content (study plan) */}
           <div className="p-6 overflow-auto">
@@ -111,6 +166,14 @@ export default function StudyPlan({ plan }: { plan: StudyPlan }) {
 
           {/* Buttons */}
           <div className="sticky -bottom-4  bg-white w-full z-2 p-2 flex justify-end space-x-4 box-border">
+            <div>
+              <input
+          type="checkbox"
+          className="checkbox checkbox-info checkbox-sm"
+          checked={resources}
+          onChange={() => setResources(!resources)}
+        /> <label className="label">do you want relevant study resources? </label>
+              </div>
             <button
               className="bg-white border border-gray-600 font-semibold cursor-pointer p-2 rounded text-gray-600 hover:bg-red-700 hover:border-transparent hover:text-white px-4"
               onClick={() => setShow(false)}

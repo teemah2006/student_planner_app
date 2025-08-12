@@ -21,7 +21,7 @@ export default function RecommendationForm({ onSuccess }: { onSuccess: () => voi
 
     setFormData((prev) => ({ ...prev,
        [name]: value,  auth:user.uid, email:user.email}));
-    console.log(`form data`, formData)
+    // console.log(`form data`, formData)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
