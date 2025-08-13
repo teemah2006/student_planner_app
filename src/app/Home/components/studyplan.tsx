@@ -169,7 +169,7 @@ export default function StudyPlan({ plan, subjects, examType }: {
             <div>
               <input
           type="checkbox"
-          className="checkbox checkbox-info checkbox-sm"
+          className="checkbox checkbox-info checkbox-sm border "
           checked={resources}
           onChange={() => setResources(!resources)}
         /> <label className="label">do you want relevant study resources? </label>

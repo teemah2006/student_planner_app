@@ -49,7 +49,7 @@ export default function Navbar() {
                     {Links}
                 </div>
             </div>
-            <div className="border-t-2 border-t-blue-100 rounded">
+            <div className="border-t-2 border-t-blue-100 rounded hidden md:block">
                 <Link href="/Home/Profile" className={pathName == "/Home/Profile" ? ActiveLinks: LinkClasses}><CgProfile />Profile</Link>
 
             </div>
@@ -74,8 +74,8 @@ export function MobileNav() {
         </>
     );
     return (
-        <div className="md:hidden block w-full justify-between items-center  flex flex-row  h-full p-2 sticky  bottom-0 bg-white z-2 ">
+        <nav className="md:hidden block w-full justify-between items-center  flex flex-row  h-full p-2 sticky  bottom-0 bg-white z-2 ">
             {Links}
-        </div>
+        </nav>
     )
 }
