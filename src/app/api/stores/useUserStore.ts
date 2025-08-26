@@ -9,6 +9,7 @@ interface User {
   region: string;
   educationLevel: string;
   grade: string;
+  fieldOfStudy?: string;
   email: string;
   profileUrl?: string;
 }

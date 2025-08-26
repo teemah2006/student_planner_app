@@ -18,6 +18,7 @@ type FormValues = {
   region: string;
   educationLevel: string;
   grade: string;
+  fieldOfStudy?: string;
   email: string;
   password: string;
 };
@@ -40,13 +41,28 @@ export default function AuthPage() {
   const educationLevel = watch("educationLevel");
 
   const primaryGrades = ["Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6"];
-  const secondaryGrades = ["JSS1 / Grade 7", "JSS2 / Grade 8", "SS1 / Grade 10", "SS2 / Grade 11", "SS3 / Grade 12"];
-  const tertiaryGrades = ["100 Level", "200 Level", "300 Level", "400 Level", "Postgraduate"];
+  const secondaryGrades = ["JSS1 / Grade 7", "JSS2 / Grade 8","JSS3 / Grade 9", "SS1 / Grade 10", "SS2 / Grade 11", "SS3 / Grade 12"];
+  const tertiaryGrades = ["100 Level", "200 Level", "300 Level", "400 Level", "500 Level", "600 Level", "Postgraduate"];
 
   const educationLevels = [
     "Primary / Elementary School",
     "Secondary / High School",
     "Tertiary / University / College",
+    "Other"
+  ];
+
+  const tertiaryFields = [
+    "Engineering",
+    "Medicine",
+    "Accounting",
+    "Law",
+    "Computer Science",
+    "Business Administration",
+    "Education",
+    "Agriculture",
+    "Arts",
+    "Sciences",
+    "Social Sciences",
     "Other"
   ];
 
@@ -166,6 +182,22 @@ export default function AuthPage() {
               </select>
               {errors.educationLevel && <p className="text-red-500 text-sm">{errors.educationLevel.message}</p>}
             </div>
+
+         {/* Study Field for Tertiary */}
+            {educationLevel === "Tertiary / University / College" && (
+              <div>
+                <label className="label">Field of Study</label>
+                <select {...register("fieldOfStudy", { required: "Field of Study is required" })}
+                  className="select w-full"
+                >
+                  <option value="">Select Field of Study</option>
+                  {tertiaryFields.map(field => (
+                    <option key={field} value={field}>{field}</option>
+                  ))}
+                </select>
+                {errors.fieldOfStudy && <p className="text-red-500 text-sm">{errors.fieldOfStudy.message}</p>}
+              </div>
+            )}
 
             {/* Grade */}
             <div>

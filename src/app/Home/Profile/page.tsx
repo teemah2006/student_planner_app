@@ -12,9 +12,11 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../../../../utils/firebase";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { set } from "react-hook-form";
 export default function ProfilePage() {
   const { user, updateUser } =useUserStore();
   const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState(user);
   const User = auth.currentUser
   const { data: session, status } = useSession();
@@ -45,6 +47,7 @@ export default function ProfilePage() {
     toast.error("User not authenticated");
     return;
   }
+    setSaving(true);
     const userRef = doc(db,'accounts', User.uid );
     try{
         await updateDoc(userRef,
@@ -58,6 +61,7 @@ export default function ProfilePage() {
         console.log(err)
         toast.error('couldnt save changes. Try again')
     }
+    setSaving(false);
     setEditMode(false);
   };
 
@@ -95,7 +99,8 @@ export default function ProfilePage() {
               <>
                 <Button
                   onClick={saveChanges}
-                  className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                  disabled={saving}
+                  className="bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:cursor-wait"
                 >
                   Save
                 </Button>

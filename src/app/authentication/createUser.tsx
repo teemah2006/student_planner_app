@@ -15,6 +15,7 @@ export default async function signUpWithEmail(data: {
     region: string;
     educationLevel: string;
     grade: string;
+    fieldOfStudy?: string;
     email: string;
     password: string;
 }, router: AppRouterInstance) {
@@ -40,6 +41,7 @@ export default async function signUpWithEmail(data: {
             region: data.region,
             educationLevel: data.educationLevel,
             grade: data.grade,
+            fieldOfStudy: data.fieldOfStudy ? data.fieldOfStudy : '',
             email: user.email,
             createdAt: new Date(),
         });
@@ -60,6 +62,7 @@ export default async function signUpWithEmail(data: {
             region: data.region,
             educationLevel: data.educationLevel,
             grade: data.grade,
+            fieldOfStudy: data.fieldOfStudy ? data.fieldOfStudy : '',
             email: data.email
         })
 

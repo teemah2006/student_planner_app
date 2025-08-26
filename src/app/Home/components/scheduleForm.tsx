@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import StudyPlan from "../components/studyplan";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import toast from 'react-hot-toast';
-import { examOptions } from "@/library/exams";
+import { examPeriods, examTypes } from "@/library/exams";
 import { useUserStore } from "@/app/api/stores/useUserStore";
 import { useSession } from "next-auth/react";
 interface StudyPlan {
@@ -27,16 +27,18 @@ interface StudyPlan {
 export default function StudyPlanner() {
   const user = useUserStore((state) => state.user);
   const { data: session } = useSession();
-  
+  const userCountry = user ? user.country.toLowerCase().trim() : "";
+  const userEducation = user ? user.educationLevel.split("/")[0].trim().toLowerCase() : "";
+  const userFieldOfStudy = user ? user.fieldOfStudy?.toLowerCase().trim() : "";
   const [subjects, setSubjects] = useState<
-  {
-    subject: string;
-    topics: {
-      topic: string;
-      level: string;
-    }[];
-  }[]
->([]);
+    {
+      subject: string;
+      topics: {
+        topic: string;
+        level: string;
+      }[];
+    }[]
+  >([]);
   const [newSubject, setNewSubject] = useState("");
   const [newTopics, setNewTopics] = useState<{ topic: string, level: string }[]>([]);
   const [hours, setHours] = useState(2);
@@ -49,10 +51,10 @@ export default function StudyPlanner() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const levelSpanClass = "space-x-2 lg:space-x-4 mr-4";
   const levelLabelClass = "text-sm md:text-md lg:text-lg"
-  
+
   if (!session) {
-        return <p>You must be signed in to view this page.</p>;
-      };
+    return <p>You must be signed in to view this page.</p>;
+  };
   const addSubject = () => {
     if (newSubject) {
 
@@ -84,7 +86,7 @@ export default function StudyPlanner() {
     console.log(subjects)
   };
 
-  
+
 
   const editSubject = (i: number) => {
     const selectedSubject = subjects[i];
@@ -166,6 +168,45 @@ export default function StudyPlanner() {
     } else { toast.error("Failed. Please enter required fields"); setLoading(false) }
   };
 
+  const generateExamOptions = () => {
+    const examOptions: string[] = [];
+    examPeriods.map((exam, index) => (
+      examOptions.push(exam)
+    ))
+    const localExams =
+      examTypes[userCountry as keyof typeof examTypes] &&
+      (examTypes[userCountry as keyof typeof examTypes] as { [key: string]: string[] })[userEducation]
+        ? (examTypes[userCountry as keyof typeof examTypes] as { [key: string]: string[] })[userEducation]
+        :  [];
+    localExams.map((exam, index) => (
+      examOptions.push(exam)
+));
+
+    const internationalExams= 
+    examTypes.international[userEducation as keyof typeof examTypes.international]? 
+    examTypes.international[userEducation as keyof typeof examTypes.international] : [];
+    internationalExams.map((exam, index) => (
+      examOptions.push(exam)
+    ));
+
+    if(userEducation === 'tertiary' && userFieldOfStudy){
+      if(userFieldOfStudy === 'medicine'){
+        examTypes.medical.international.map((exam, index) => (
+          examOptions.push(exam)
+        ));
+        const localMedicalExams =
+        examTypes.medical.countrySpecific[userCountry as keyof typeof examTypes.medical.countrySpecific]?
+        examTypes.medical.countrySpecific[userCountry as keyof typeof examTypes.medical.countrySpecific] : [];
+        localMedicalExams.map((exam, index) => (
+          examOptions.push(exam)
+        ));
+      }
+    }
+    return examOptions;
+
+
+  }
+
   return (
     <div className="w-full bg-gray-100   h-screen overflow-auto  p-4 md:p-6 md:p-10   shadow-md text-black">
       <div className="flex-grow-0">
@@ -204,7 +245,7 @@ export default function StudyPlanner() {
                   <span className={levelSpanClass}>
                     <input
                       type="radio" name={`radio-${j + 1}`} value="weak"
-                       disabled={loading}
+                      disabled={loading}
                       checked={topic.level === "weak"}
                       onChange={(e) => {
                         const updatedTopics = [...newTopics];
@@ -217,7 +258,7 @@ export default function StudyPlanner() {
                   <span className={levelSpanClass}>
                     <input
                       type="radio" name={`radio-${j + 1}`}
-                       disabled={loading}
+                      disabled={loading}
                       value="moderate"
                       checked={topic.level === "moderate"}
                       onChange={(e) => {
@@ -231,7 +272,7 @@ export default function StudyPlanner() {
                   <span className={levelSpanClass}>
                     <input
                       type="radio" name={`radio-${j + 1}`}
-                       disabled={loading}
+                      disabled={loading}
                       value="strong"
                       checked={topic.level === "strong"}
                       onChange={(e) => {
@@ -299,6 +340,8 @@ export default function StudyPlanner() {
           <label className="block font-semibold">Study Hours Per Day</label>
           <input
             type="number"
+            max={12}
+            min={1}
             value={hours}
             disabled={loading}
             onChange={(e) => setHours(Number(e.target.value))}
@@ -336,10 +379,9 @@ export default function StudyPlanner() {
             disabled={loading}
             onChange={(e) => setSelectedExam(e.target.value)} value={selectedExam} >
             <option value="">--select exam type--</option>
-            {examOptions.map((exam, index)=>(
+            {generateExamOptions().map((exam, index) => (
               <option key={index} value={exam}>{exam}</option>
             ))}
-            
           </select>
         </div>
 
