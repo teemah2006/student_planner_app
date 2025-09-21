@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +14,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { set } from "react-hook-form";
 
 type FormValues = {
   name: string;
