@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
-import StudyPlan from "../components/studyplan";
+import StudyPlan from "../Common/studyplan";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import toast from 'react-hot-toast';

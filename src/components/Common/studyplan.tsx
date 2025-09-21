@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { db, auth } from "../../../../utils/firebase";
+import { db, auth } from "../../../utils/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';

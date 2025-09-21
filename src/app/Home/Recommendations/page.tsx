@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { useEffect, useState } from 'react';
-import RecommendationCard from '../components/recommendationCard';
-import RecommendationForm from '../components/studyrecommendationForm';
+import RecommendationCard from '../../../components/Common/recommendationCard';
+import RecommendationForm from '../../../components/Common/studyrecommendationForm';
 import { setDoc, collection, doc, query, where, getDocs, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../utils/firebase';
 import { useSession } from 'next-auth/react';

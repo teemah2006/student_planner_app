@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { useState } from 'react';
-import { auth } from '../../../../utils/firebase';
+import { auth } from '../../../utils/firebase';
 import toast from 'react-hot-toast';
 export default function RecommendationForm({ onSuccess }: { onSuccess: () => void }) {
   const [formData, setFormData] = useState({

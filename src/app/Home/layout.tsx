@@ -1,7 +1,7 @@
 import "../globals.css";
-import SessionProvider from "../components/SessionProvider";
-import Navbar from "./components/navbar";
-import { MobileNav } from "./components/navbar";
+import SessionProvider from "../../components/Features/SessionProvider";
+import Navbar from "../../components/Common/navbar";
+import { MobileNav } from "../../components/Common/navbar";
 // import AuthSync from "../components/authSync";
 
 export default function RootLayout({

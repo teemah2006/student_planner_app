@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa6";
+import { Input } from "@/components/ui/input";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import signUpWithEmail from "./createUser";
 import Signin from "./signin";
@@ -100,7 +101,7 @@ export default function AuthPage() {
             {/* Name */}
             <div>
               <label className="label">Name</label>
-              <input
+              <Input
                 {...register("name", { required: "Name is required" })}
                 className="input w-full"
                 placeholder="John Doe"
@@ -218,7 +219,7 @@ export default function AuthPage() {
             <div>
               <label className="label">Set Password</label>
               <label className="input validator w-full flex items-center gap-2">
-                <input
+                <Input
                   type={showPassword ? "text" : "password"}
                   {...register("password", {
                     required: "Password is required",
@@ -240,7 +241,7 @@ export default function AuthPage() {
             {/* Email */}
             <div>
               <label className="label">Email</label>
-              <input
+              <Input
                 {...register("email", {
                   required: "Email is required",
                   pattern: {

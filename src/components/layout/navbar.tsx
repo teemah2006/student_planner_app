@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 import { BsClockHistory } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { signOut as logOut } from "firebase/auth";
-import { auth } from "../../../../utils/firebase";
+import { auth } from "../../../utils/firebase";
 import { useUserStore } from "@/app/api/stores/useUserStore";
 export default function Navbar() {
     const pathName = usePathname();

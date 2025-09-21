@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
-import StudyPlanViewer from "../components/studyplanfromdb";
-import DashboardGrid2 from "../components/dashboardgrid2";
+import StudyPlanViewer from "../../../components/Common/studyplanfromdb";
+import DashboardGrid2 from "../../../components/Features/dashboardgrid2";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 export default function Dashboardpg(){

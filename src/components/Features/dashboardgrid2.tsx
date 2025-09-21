@@ -3,11 +3,11 @@
 'use client';
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import RecommendationCard from "./recommendationCard";
+import RecommendationCard from "../Common/recommendationCard";
 import { useSession } from "next-auth/react";
 import { getDoc, doc, } from "firebase/firestore";
-import { auth, db } from "../../../../utils/firebase";
-import { SessionType } from "./studyplanfromdb";
+import { auth, db } from "../../../utils/firebase";
+import { SessionType } from "../Common/studyplanfromdb";
 import { onAuthStateChanged } from "firebase/auth";
 import toast from 'react-hot-toast';
 

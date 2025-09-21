@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Images } from "../Media/Image";
+import { Images } from "../../../public/Media/Image";
 import { useRouter } from "next/navigation";
 
 export default function Landing() {

@@ -3,13 +3,13 @@
 import { useSession , getSession } from 'next-auth/react';
 import { SetStateAction, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '../../../../utils/firebase'; // make sure this file is correctly configured
+import { db, auth } from '../../../utils/firebase'; // make sure this file is correctly configured
 import EditPlanForm from './editplan';
 import Link from 'next/link';
 import { onAuthStateChanged } from "firebase/auth";
 import toast from 'react-hot-toast';
 import Image from 'next/image';
-import { Images } from '@/app/Media/Image';
+import { Images } from '../../../public/Media/Image';
 export type SessionType = {
   subject: string;
   topic: string;

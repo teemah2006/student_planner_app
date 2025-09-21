@@ -2,7 +2,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
-import {auth} from '../../../../utils/firebase'; // your client-side Firebase instance
+import {auth} from '../../../utils/firebase'; // your client-side Firebase instance
 
 const AuthContext = createContext<{
   user: User | null;
