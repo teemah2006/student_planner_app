@@ -3,6 +3,8 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { adminDb } from "../../../../utils/firebaseAdmin";
+import curriculum from '@/data/primary1_nvc_clean.json';
+import { subjectsProps } from "@/interfaces";
 const currentDate = new Date().toISOString().split("T")[0];
 
 const openai = new OpenAI({
@@ -67,7 +69,7 @@ ${examDate ? `- Exam date: ${examDate}` : ""}
 
 Subjects and Topics:
 ${subjects.map(
-  (subject: { subject: string; topics: { topic: string, level: string }[]; }, i: number) => {
+  (subject: subjectsProps, i: number) => {
      const weak = subject.topics.filter(t => t.level === "weak").map(t => t.topic);
     const moderate = subject.topics.filter(t => t.level === "moderate").map(t => t.topic);
     const strong = subject.topics.filter(t => t.level === "strong").map(t => t.topic);
@@ -78,13 +80,64 @@ ${subjects.map(
    Strong Topics: ${strong.length > 0 ? strong.join(", ") : "None"}`;
   }).join("\n")}
 
-Personalization Rules:
+
+Curriculum Reference (for guidance):
+
+${subjects
+  .map((subject: subjectsProps) => {
+    // Check if the curriculum subject matches the user's subject
+    const subjectInCurriculum =
+      curriculum.subject?.toLowerCase() === subject.subject.toLowerCase();
+
+    if (!subjectInCurriculum) return ""; // Skip unrelated subjects
+
+    // Match curriculum topics with user-selected topics
+    const matchedTopics = curriculum.topics.filter(t =>
+      subject.topics.some(
+        st => st.topic.toLowerCase().trim() === t.title.toLowerCase().trim()
+      )
+    );
+
+    // Skip if no matching topics
+    if (matchedTopics.length === 0) return "";
+
+    // Format matching curriculum topics
+    const formattedMatches = matchedTopics
+      .map(
+        m => `
+- ${m.title}
+  Description: ${m.description || "N/A"}
+  Objectives: ${m.objectives?.join("; ") || "N/A"}
+  Suggested Activities: ${m.activities?.join("; ") || "N/A"}
+  Resources: ${m.resources?.join("; ") || "N/A"}
+  Evaluation: ${m.evaluation?.join("; ") || "N/A"}
+`
+      )
+      .join("\n");
+
+    // Return subject and its matched topics
+    return `${subject.subject} Curriculum Matches:\n${formattedMatches}`;
+  })
+  .filter(Boolean)
+  .join("\n\n")}
+
+  Personalization Rules:
 1. Tailor study activities to the exam type and education level.
 2. Prioritize weak topics first, then moderate, then strong.
-3. Suggest specific activities for each topic (e.g., "review past questions", "watch tutorial", "practice timed test").
-4. Adapt session lengths and break frequency for the user's age.
-5. Include culturally relevant resources or tips based on country and region.
-6. If exam date is provided, prioritize time-sensitive topics.
+3. When describing study activities, use the *description, objectives, and activities* from the curriculum JSON for matching topics. 
+   - If a topic exists in the curriculum JSON, describe the activity based on its "activities" or "objectives" field.
+   - Example: if topic = "Food Safety", the study session could say:
+     "Review pictures showing safe food handling and discuss ways of ensuring food safety."
+4. If a topic is not found in the curriculum JSON, suggest general study actions (review, solve exercises, watch a tutorial, etc.).
+5. Include culturally relevant resources or examples based on the user's country and region.
+6. Adapt session lengths and break frequency for the user's age.
+7. Include break sessions with relaxing or energizing suggestions when necessary.
+8. If exam date is provided, prioritize time-sensitive topics.
+9. When generating activities, always relate them to real-life or visual examples if possible.
+10. Encourage consistency and motivation throughout the plan.
+
+
+
 
 Instructions:
 - Create a 7-day study schedule in *valid JSON* format.

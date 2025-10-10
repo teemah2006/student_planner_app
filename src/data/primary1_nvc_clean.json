@@ -1,0 +1,315 @@
+{
+  "country": "Nigeria",
+  "curriculum": "National Values Curriculum",
+  "level": "Primary 1",
+  "subject": "National Values / Social Studies",
+  "topics": [
+    {
+      "title": "People, Places and Objects to Respect",
+      "description": "Meaning of respect; people, places and things to respect (traditional rulers, parents, leaders, national symbols, public properties, time).",
+      "objectives": [
+        "Define respect",
+        "Identify people, places and things to respect",
+        "Demonstrate ways of respecting people, places and things"
+      ],
+      "activities": [
+        "Teacher tells stories about why elders and leaders should be respected",
+        "Teacher demonstrates ways to show respect in local contexts",
+        "Show charts and pictures (mosque, church, palace, flag, mace, constitution)"
+      ],
+      "resources": [
+        "Charts and pictures of mosque, church, palace, national flag, mace, constitution",
+        "Cartoons, textbooks, posters, video clips",
+        "Visits to important places (palace, mosque, church, museum, National Assembly)"
+      ],
+      "evaluation": [
+        "Pupils define respect",
+        "Pupils name places or objects that should be respected",
+        "Pupils state two reasons for respecting elders/teachers/leaders",
+        "Pupils demonstrate ways to show respect"
+      ]
+    },
+    {
+      "title": "Rules and Regulations in the Society",
+      "description": "Rules and regulations are do's and don'ts that guide social behaviour; includes NAFDAC rules on food and drug control.",
+      "objectives": [
+        "Explain the meaning of rules and regulations",
+        "Mention gains of obeying rules and regulations",
+        "Mention results of disobeying rules and regulations",
+        "Mention rules/regulations for food and drug administration"
+      ],
+      "activities": [
+        "Class discussion on meaning of rules and regulations",
+        "Show pictures/video clips of children receiving gifts to discuss gains of obedience",
+        "Present pictures of children suffering consequences of disobedience",
+        "Discuss NAFDAC laws and regulations on food and drugs"
+      ],
+      "resources": [
+        "Textbooks, pictures of children receiving gifts, video clips",
+        "Food and drug packs and instructional leaflets, diagrams of foods and drugs"
+      ],
+      "evaluation": [
+        "Pupils say what to do and not to do in community",
+        "Pupils mention gains of obeying rules",
+        "Pupils mention results of disobeying rules",
+        "Pupils name three NAFDAC rules on foods and drugs control"
+      ]
+    },
+    {
+      "title": "Importance of Civic Education",
+      "description": "Why study Civic Education: understand democratic and civic rights and responsibilities, nurture democracy; includes public health campaigns (HIV/AIDS, drug abuse).",
+      "objectives": [
+        "Discuss the need for Civic Education in Nigeria",
+        "Mention topics learnt in Civic Education and their importance",
+        "Identify some public health enlightenment campaigns"
+      ],
+      "activities": [
+        "Guided discussion on need for Civic Education",
+        "Lead pupils to name topics and benefits of Civic Education",
+        "Guide class to identify public health campaigns and their roles"
+      ],
+      "resources": [
+        "Textbooks, pictures/video clips of democratic activities, radio jingles, posters"
+      ],
+      "evaluation": [
+        "Pupils say why Civic Education is important",
+        "Pupils enumerate three benefits from studying Civic Education",
+        "Pupils mention two public health awareness campaigns"
+      ]
+    },
+    {
+      "title": "Meaning of Social Studies",
+      "description": "Social Studies is the study of man and how his problems are solved in the environment.",
+      "objectives": [
+        "Explain the meaning of Social Studies"
+      ],
+      "activities": [
+        "Teacher explains and guides pupils to explain the meaning of Social Studies",
+        "Class Q&A"
+      ],
+      "resources": [
+        "Pupils' textbooks and workbooks"
+      ],
+      "evaluation": [
+        "Pupil explains the meaning of Social Studies"
+      ]
+    },
+    {
+      "title": "The Family (Types and Responsibilities)",
+      "description": "The family is the basic unit of society. Types include nuclear and extended; family members have roles and responsibilities.",
+      "objectives": [
+        "Define family",
+        "Identify types of family",
+        "Explain roles of family members"
+      ],
+      "activities": [
+        "Guided questions to discover the meaning of family",
+        "Discussion to identify types of family",
+        "Ask pupils to find out family information from home"
+      ],
+      "resources": [
+        "Charts showing nuclear and extended families, family photographs, cartoons, video ROMs"
+      ],
+      "evaluation": [
+        "Pupils explain meaning of family",
+        "Pupils mention two types of family",
+        "Pupils explain types of family"
+      ]
+    },
+    {
+      "title": "Qualities of a Good Family",
+      "description": "Qualities include honesty, contentment, interest for others, not greedy, discipline, obedience, love and cooperation.",
+      "objectives": [
+        "State qualities of a good family"
+      ],
+      "activities": [
+        "Guide pupils to identify and explain qualities of a good family",
+        "Role-play family behaviours demonstrating honesty, love and obedience"
+      ],
+      "resources": [
+        "Pictures and charts showing moral values"
+      ],
+      "evaluation": [
+        "Pupils mention three qualities of a good family"
+      ]
+    },
+    {
+      "title": "Meaning and Types of Culture",
+      "description": "Culture is people's ways of life (dressing, dancing, eating); types include material and non-material culture.",
+      "objectives": [
+        "Explain the meaning of culture",
+        "List types of culture"
+      ],
+      "activities": [
+        "Guided questions and role play to explain culture",
+        "Identify material and non-material culture with examples"
+      ],
+      "resources": [
+        "Pictures of traditional dress, cultural objects, charts"
+      ],
+      "evaluation": [
+        "Pupils state meaning of culture and explain types of culture"
+      ]
+    },
+    {
+      "title": "Values that Show Good Morals",
+      "description": "Moral values considered right (greeting, respect, loyalty, kindness, honesty, contentment, tolerance) and wrong values (stealing, bullying, fighting, lying).",
+      "objectives": [
+        "Explain values which show good morals",
+        "Differentiate between right and wrong values"
+      ],
+      "activities": [
+        "Lead discussion on moral values",
+        "Demonstrate examples of good and bad values using role play"
+      ],
+      "resources": [
+        "Cartoons, posters, ROM films, photographs, exhibits"
+      ],
+      "evaluation": [
+        "Pupils explain values considered right and wrong"
+      ]
+    },
+    {
+      "title": "Food (meaning, local foods and sources)",
+      "description": "Definition of food, common local foods, and sources of food in the community (farms, markets, rivers).",
+      "objectives": [
+        "Define food",
+        "Mention foods eaten in the locality",
+        "Mention sources of food in the community"
+      ],
+      "activities": [
+        "Ask pupils to bring food samples from home and identify them",
+        "Class discussion and painting of food items"
+      ],
+      "resources": [
+        "Real food items, pictures of foods, video clips, pictures of farms and markets"
+      ],
+      "evaluation": [
+        "Pupils define food",
+        "Pupils list five foods eaten locally",
+        "Pupils state sources of food in the community"
+      ]
+    },
+    {
+      "title": "Food Safety",
+      "description": "How to ensure that what we eat, drink or take is not harmful to health; includes reading labels, observing signs of spoilage, and washing hands.",
+      "objectives": [
+        "Define food safety",
+        "Mention ways of ensuring food safety"
+      ],
+      "activities": [
+        "Lead pupils to define food safety",
+        "Ask questions to identify ways of making food safe (wash hands, check labels, observe spoilage signs)"
+      ],
+      "resources": [
+        "Pupils' textbooks, pictures showing ways of making food safe"
+      ],
+      "evaluation": [
+        "Pupils define food safety",
+        "Pupils mention ways of ensuring food safety"
+      ]
+    },
+    {
+      "title": "Risk Factors in Food",
+      "description": "Risk factors that drive occurrence of hazards in food: adulteration, food fraud, agro-chemical contamination; risks in distribution/preparation include poor storage, poor handling and poor hygiene.",
+      "objectives": [
+        "Explain meaning of risk factors",
+        "State risk factors in food",
+        "Identify risk factors in food distribution and preparation"
+      ],
+      "activities": [
+        "Present pictures of risk factors in food distribution and preparation",
+        "Guide pupils to state risk factors and discuss poor storage/handling"
+      ],
+      "resources": [
+        "Pupils' textbooks, video clips on risk factors, pictures/photographs"
+      ],
+      "evaluation": [
+        "Pupils explain risk factors",
+        "Pupils list risk factors in food and distribution"
+      ]
+    },
+    {
+      "title": "Sources and Uses of Water",
+      "description": "Sources of water (stream, spring, river, tap, borehole, rainfall, well) and domestic uses (drinking, washing, cooking).",
+      "objectives": [
+        "Mention sources of water supply in the locality",
+        "Enumerate uses of water in homes"
+      ],
+      "activities": [
+        "Lead discussion and use pictures to guide pupils in enumerating sources and uses",
+        "Interpret pictures of water sources"
+      ],
+      "resources": [
+        "Pictures depicting sources of water, pictures showing domestic water uses"
+      ],
+      "evaluation": [
+        "Pupils name four sources of water",
+        "Pupils list three uses of water"
+      ]
+    },
+    {
+      "title": "Concept of Security",
+      "description": "Security of life and property: meaning, sources of danger (road accidents, fire outbreaks, strangers, unsafe food, fake drugs) and precautions.",
+      "objectives": [
+        "Explain the meaning of security",
+        "Take precautions against dangers"
+      ],
+      "activities": [
+        "Guide pupils to explain security and identify sources of danger",
+        "Role-play fire outbreaks/road accidents and appropriate responses"
+      ],
+      "resources": [
+        "Textbooks, pictures on road accidents and fire outbreaks"
+      ],
+      "evaluation": [
+        "Pupils explain meaning of security",
+        "Pupils give examples of sources of insecurity and precautionary measures"
+      ]
+    },
+    {
+      "title": "Reasons for Taking Substances into the Body",
+      "description": "Reasons for taking substances: stay alive, hunger, thirst, enjoyment, imitation, curiosity, availability; effects include stomach pain, vomiting, restlessness, dizziness, fainting, death.",
+      "objectives": [
+        "Give reasons for taking substances into the body",
+        "Mention effects of taking substances into the body"
+      ],
+      "activities": [
+        "Call on pupils to demonstrate reasons",
+        "Dramatize reasons and use stories to highlight effects",
+        "Ask pupils to narrate experiences"
+      ],
+      "resources": [
+        "Posters, charts, pictures, drawing materials"
+      ],
+      "evaluation": [
+        "Pupils give reasons for taking substances",
+        "Pupils mention four effects of taking substances"
+      ]
+    },
+    {
+      "title": "Overdose (too much eating, drinking or smoking)",
+      "description": "Causes and observable signs/symptoms of overdose (coughing, fainting, stooling); effects of too much eating/drinking/inhaling and what to do to help sufferers (report to adults, seek help).",
+      "objectives": [
+        "Demonstrate looks and behaviours of people who take too much",
+        "Mention effects of drinking too much",
+        "Mention effects of inhaling too much",
+        "Say what to do to help somebody suffering overdose"
+      ],
+      "activities": [
+        "Present drawings/paintings to show effects",
+        "Ask pupils to narrate experiences and dramatize suggestions",
+        "Guide a play or drama on the topic"
+      ],
+      "resources": [
+        "Charts, pictures, posters, drawing materials, posters of children helping sufferers"
+      ],
+      "evaluation": [
+        "Pupils mention effects of drinking too much",
+        "Pupils mention three effects of inhaling too much",
+        "Pupils demonstrate behaviours and looks of people who overeat/drink/smoke",
+        "Pupils state actions to help overdose sufferers (report to adults, seek help)"
+      ]
+    }
+  ]
+}

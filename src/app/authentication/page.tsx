@@ -30,7 +30,8 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
-  const [newAccount, setNewAccount] = useState(true)
+  const [newAccount, setNewAccount] = useState(true);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -73,7 +74,10 @@ export default function AuthPage() {
 
   const onSubmit = (data: FormValues) => {
     console.log("Form submitted:", data);
-    signUpWithEmail(data,router)
+    setLoading(true);
+    // Call the sign-up function
+    signUpWithEmail(data,router);
+    setLoading(false);
     // You can send this data to Firebase or your backend
   };
 
@@ -114,6 +118,7 @@ export default function AuthPage() {
               <label className="label">Age</label>
               <select {...register("age", { required: "Age is required" })} className="select w-full">
                 <option value="">Pick age range</option>
+                <option>5-9</option>
                 <option>10-12</option>
                 <option>13-15</option>
                 <option>16-18</option>
@@ -256,7 +261,7 @@ export default function AuthPage() {
             </div>
 
             {/* Submit */}
-            <button type="submit" className="btn btn-primary w-full">
+            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
               Sign Up
             </button>
           </form>

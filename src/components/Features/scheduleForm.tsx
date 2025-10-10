@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import {  useState } from "react";
 import StudyPlan from "../Common/studyplan";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { examPeriods, examTypes } from "@/library/exams";
 import { useUserStore } from "@/app/api/stores/useUserStore";
 import { useSession } from "next-auth/react";
+import { curriculumProps } from "@/interfaces";
 interface StudyPlan {
   dailyPlan: {
     day: string,
@@ -27,6 +28,7 @@ interface StudyPlan {
 export default function StudyPlanner() {
   const user = useUserStore((state) => state.user);
   const { data: session } = useSession();
+  const [curriculum, setCurriculum] = useState<curriculumProps | null>(null);
   const userCountry = user ? user.country.toLowerCase().trim() : "";
   const userEducation = user ? user.educationLevel.split("/")[0].trim().toLowerCase() : "";
   const userFieldOfStudy = user ? user.fieldOfStudy?.toLowerCase().trim() : "";
@@ -207,6 +209,23 @@ export default function StudyPlanner() {
 
   }
 
+  // Detect if user.grade is "Primary 1"
+  const isPrimary1 = user?.grade === "Primary 1";
+  if (isPrimary1 && user.country.toLowerCase() === "nigeria") {
+            fetch("/api/curriculum")
+                .then((res) => res.json())
+                .then((data) => setCurriculum(data));
+    }
+
+  // Get curriculum subjects/topics for Primary 1
+  const primary1Subjects = isPrimary1 ? curriculum?.subject : [];
+
+  // Extract only topic titles for Primary 1 and selected subject
+  const primary1Topics = isPrimary1 && newSubject && curriculum?.topics
+  ? curriculum.topics
+      .map((t) => t.title)
+  : [];
+
   return (
     <div className="w-full bg-gray-100   h-screen overflow-auto  p-4 md:p-6 md:p-10   shadow-md text-black">
       <div className="flex-grow-0">
@@ -215,32 +234,69 @@ export default function StudyPlanner() {
         {/* Subject Input */}
         <div className="mt-4 ">
           <div className="border rounded-xl p-4 space-y-2 bg-white shadow ">
-            <input
-              type="text"
-              placeholder="Enter subject"
-              className="w-full border px-3 py-2 rounded-md disabled:border-gray-500  disabled:cursor-not-allowed"
-              disabled={loading}
-              value={newSubject}
-              onChange={(e) => setNewSubject(e.target.value)}
-              required
-            />
+            {isPrimary1 ? (
+              // Subject as select for Primary 1
+              <select
+                className="w-full border px-3 py-2 rounded-md disabled:border-gray-500  disabled:cursor-not-allowed"
+                disabled={loading}
+                value={newSubject}
+                onChange={(e) => {
+                  setNewSubject(e.target.value);
+                  setNewTopics([{ topic: "", level: "weak" }]); // reset topics when subject changes
+                }}
+                required
+              >
+                <option value="">Select subject</option>
+                  <option value={primary1Subjects}>{primary1Subjects}</option>
+              </select>
+            ) : (
+              // Subject as text input for other grades
+              <input
+                type="text"
+                placeholder="Enter subject"
+                className="w-full border px-3 py-2 rounded-md disabled:border-gray-500  disabled:cursor-not-allowed"
+                disabled={loading}
+                value={newSubject}
+                onChange={(e) => setNewSubject(e.target.value)}
+                required
+              />
+            )}
+
             {newTopics.map((topic, j) => (
               <div key={j} className="w-full flex space-x-4 items-center">
-                <input
-                  type="text"
-                  placeholder={`Topic ${j + 1}`}
-                  className={`w-[63%] border px-3 py-2 rounded-md mt-1 disabled:border-gray-500
-                 disabled:cursor-not-allowed`}
-                  disabled={loading}
-                  value={topic.topic}
-                  onChange={(e) => {
-                    const updatedTopics = [...newTopics];
-                    updatedTopics[j].topic = e.target.value;
-                    setNewTopics(updatedTopics);
-                  }}
-
-
-                />
+                {isPrimary1 ? (
+                  // Topic as select for Primary 1
+                  <select
+                    className="w-[63%] border px-3 py-2 rounded-md mt-1 disabled:border-gray-500 disabled:cursor-not-allowed"
+                    disabled={loading}
+                    value={topic.topic}
+                    onChange={(e) => {
+                      const updatedTopics = [...newTopics];
+                      updatedTopics[j].topic = e.target.value;
+                      setNewTopics(updatedTopics);
+                    }}
+                  >
+                    <option value="">Select topic</option>
+                    {primary1Topics.map((t: string) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                ) : (
+                  // Topic as text input for other grades
+                  <input
+                    type="text"
+                    placeholder={`Topic ${j + 1}`}
+                    className={`w-[63%] border px-3 py-2 rounded-md mt-1 disabled:border-gray-500
+                   disabled:cursor-not-allowed`}
+                    disabled={loading}
+                    value={topic.topic}
+                    onChange={(e) => {
+                      const updatedTopics = [...newTopics];
+                      updatedTopics[j].topic = e.target.value;
+                      setNewTopics(updatedTopics);
+                    }}
+                  />
+                )}
                 <div className="w-[35%]">
                   <span className={levelSpanClass}>
                     <input
@@ -284,7 +340,6 @@ export default function StudyPlanner() {
                     <label className={levelLabelClass}>Strong</label>
                   </span>
                 </div>
-
                 <button className="cursor-pointer disabled:cursor-not-allowed bg-white" disabled={loading} onClick={() => delTopic(j)}><MdDelete /></button>
               </div>
 

@@ -5,26 +5,14 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
 import { useUserStore } from "@/app/api/stores/useUserStore";
+import { StudyPlanProps } from "@/interfaces";
 
-interface StudyPlan {
-  dailyPlan: {
-    day: string,
-    sessions:
-    {
-      subject: string,
-      topic: string,
-      level: string,
-      activity: string,
-      timeInterval: string;
-    }[]
-  }[];
-}
 
 
 
 
 export default function StudyPlan({ plan, subjects, examType }: {
-  plan: StudyPlan, subjects: {
+  plan: StudyPlanProps, subjects: {
     subject: string;
     topics: {
       topic: string;
@@ -51,7 +39,7 @@ export default function StudyPlan({ plan, subjects, examType }: {
     }
   }, [loadResource]);
 
-  const savePlanToFirestore = async (plan: StudyPlan) => {
+  const savePlanToFirestore = async (plan: StudyPlanProps) => {
     setLoading(true);
 
 

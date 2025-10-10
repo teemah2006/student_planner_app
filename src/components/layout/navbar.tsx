@@ -1,6 +1,8 @@
 'use client';
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { Images } from "../../../public/Media/Image";
 import { signOut } from "next-auth/react";
 import { FaSwatchbook } from "react-icons/fa6";
 import { FaArrowsRotate } from "react-icons/fa6";
@@ -39,7 +41,7 @@ export default function Navbar() {
 
 
                 <div className="justify-between flex flex-row">
-                    <div className="md:text-xl text-xl lg:text-2xl font-bold"><span className="text-white">Study</span><span className="text-yellow-500">Ease</span></div>
+                    <Image src={Images.logo}  alt="logo" className="h-12 w-[50%] rounded bg-white object-cover" />
                     <button onClick={() => handleLogout()} className={LinkClasses + 'md:hidden text-gray-100 flex-row'}><FaArrowRightFromBracket />Log Out</button>
 
                 </div>
