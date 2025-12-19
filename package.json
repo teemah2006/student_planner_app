@@ -19,7 +19,7 @@
     "firebase": "^11.6.0",
     "firebase-admin": "^13.4.0",
     "lucide-react": "^0.539.0",
-    "next": "^15.2.3",
+    "next": "15.2.8",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
     "openai": "^4.89.0",
